@@ -1,10 +1,12 @@
-import { createContext, useContext } from "react";
+import { useContext } from "react";
+import { ApiContext } from "../context/ApiContext";
 
-interface api {
-  baseUrl: string;
-  token?: string;
-}
+const useApi = (): object => {
+  const context = useContext(ApiContext);
+  if (context === undefined)
+    throw new Error("useApi() muse be used inside a ApiContext");
 
-export const ApiContext = createContext<api>({ baseUrl: "", token: "" });
+  return context;
+};
 
-export const useApi = () => useContext(ApiContext);
+export default useApi;

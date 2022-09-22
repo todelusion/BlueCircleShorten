@@ -3,3 +3,4 @@
 /package.json
 /postcss.config.cjs
 /vite.config.ts
+/tailwind.config.cjs

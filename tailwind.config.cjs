@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./index.html",
@@ -7,15 +6,15 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'xs': '384px'
+        'xs': "384px"
       },
       colors: {
-        'primary': '#38470B',
+        'primary': '#3F20FF',
         'second': '#949C7C',
       }
     },
     fontFamily: {
-      sans: ['Noto Sans TC','Roboto'], 
+      sans: ['Noto Sans TC','Roboto'],
       serif: ['Noto Serif TC','Times'],
       dela: ['Dela Gothic One']
     }

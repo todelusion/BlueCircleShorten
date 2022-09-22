@@ -3,20 +3,15 @@ import React from "react";
 interface FormPops {
   className: string;
   label: string;
-  type: string;
-  border: string;
 }
 
-function Form({ className, label, type, border }: FormPops): JSX.Element {
+function Form({ className, label }: FormPops): JSX.Element {
   return (
-    <div className={className}>
-      <div className="border-2 border-black bg-white py-3 px-5">
-        <p>{label}</p>
-        <input
-          type={type}
-          className={`w-full ${border} border-b-2 border-black outline-none`}
-        />
-      </div>
+    <div
+      className={`box-shadow lg-Pseudo slate-Pseudo flex flex-col justify-between border-2 border-black bg-white py-3 px-4 lg:h-24  ${className}`}
+    >
+      <p>{label}</p>
+      <input className="w-full border-b-2 border-black outline-none" />
     </div>
   );
 }

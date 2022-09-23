@@ -19,12 +19,15 @@
   },
   "plugins": [
     "react",
+    "react-hooks",
     "prettier"  
   ],
   "rules": {
 	    //  "prettier/prettier": ["error"],
          "linebreak-style":"off",
-         "react/react-in-jsx-scope": "off"
+         "react/react-in-jsx-scope": "off",
+         "react-hooks/rules-of-hooks": "warn",
+         "react-hooks/exhaustive-deps": "warn"
         //  "react/function-component-definition": [
         //   2,
         //   {

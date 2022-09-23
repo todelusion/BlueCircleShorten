@@ -1,32 +1,31 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ThemeColor from "../../types/Enum";
+
 import useApi from "../../hooks/useApi";
+import type { IApiReducer } from "../../context/ApiContext";
+
 import Form from "../../components/Form";
 import Button from "../../components/Button";
 
-interface Contex {
-  api?: {
-    baseUrl: string;
-    token: string;
-  };
-}
-interface LoginInfo {
-  email?: string;
-  password?: string;
-}
+const initialState = {
+  email: "",
+  password: "",
+};
 
 export default function Login(): JSX.Element {
-  const [loginInfo, setLoginInfo] = useState<LoginInfo>({});
-  const api: Contex = useApi();
+  const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
+  const { state, dispatch }: IApiReducer = useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    setLoginInfo((prevState): LoginInfo => ({ ...prevState, [name]: value }));
+    setLoginInfo((prevState: typeof initialState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const onSubmit = (): void => {
-    console.log(api);
     console.log(loginInfo);
   };
 
@@ -38,13 +37,11 @@ export default function Login(): JSX.Element {
           label={{ name: "email", description: "電子郵件" }}
           handleChange={handleChange}
         />
-        {loginInfo.email}
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-14 lg:h-24`}
           label={{ name: "password", description: "密碼" }}
           handleChange={handleChange}
         />
-        {loginInfo.password}
         <div className="mb-10 flex items-end justify-between">
           <Link
             to="/regist"

@@ -1,6 +1,7 @@
 import ThemeColor from "../types/Enum";
 
 export interface IButtonProps {
+  handleClick?: () => void;
   label: string;
   buttonColor: ThemeColor;
   className: string;
@@ -8,6 +9,7 @@ export interface IButtonProps {
 }
 
 export default function Button({
+  handleClick,
   label,
   buttonColor,
   className,
@@ -16,6 +18,7 @@ export default function Button({
   return (
     <div className={`h-full w-full ${className} box-shadow sm-Pseudo bg-white`}>
       <button
+        onClick={handleClick}
         type="button"
         className={`h-full w-full border-2 ${buttonColor} ${underline}`}
       >

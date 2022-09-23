@@ -18,6 +18,7 @@ export default function Router(): JSX.Element {
           <Route path="/regist" element={<Regist />} />
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/changepassword" element={<ChangePassword />} />
+          <Route path="/changepassword/:id" element={<ChangePassword />} />
         </Route>
       </Routes>
     </ApiProvider>

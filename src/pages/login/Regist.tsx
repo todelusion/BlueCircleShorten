@@ -31,7 +31,7 @@ export default function Login(): JSX.Element {
         <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="電子郵件" />
         <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="姓名" />
         <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="密碼" />
-        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="確認密碼" />
+        <Form className={`${ThemeColor.Slate_Pseudo} mb-5`} label="確認密碼" />
         <div className="mb-10 flex items-end justify-between">
           <div className="flex w-full items-end">
             <Link
@@ -40,17 +40,17 @@ export default function Login(): JSX.Element {
             >
               <Button
                 label="返回"
-                buttonColor={ThemeColor.Primary}
+                buttonColor={ThemeColor.Black}
                 underline="underline"
-                className={`${ThemeColor.Primary_Pseudo} text-sm`}
+                className={`${ThemeColor.Slate_Pseudo} text-sm`}
               />
             </Link>
           </div>
           <Button
             label="送出"
-            buttonColor={ThemeColor.Black}
+            buttonColor={ThemeColor.Primary}
             underline="no-underline"
-            className={`${ThemeColor.Slate_Pseudo} h-16 max-w-[100px] md:h-20`}
+            className={`${ThemeColor.Primary_Pseudo} h-16 max-w-[100px] md:h-20`}
           />
         </div>
       </div>

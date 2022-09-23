@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-
 import { Link } from "react-router-dom";
-
 import ThemeColor from "../../types/Enum";
-
 import useApi from "../../hooks/useApi";
-
 import Form from "../../components/Form";
-
 import Button from "../../components/Button";
 
 interface Contex {

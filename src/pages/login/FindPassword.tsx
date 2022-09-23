@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-
 import { Link } from "react-router-dom";
-
 import ThemeColor from "../../types/Enum";
-
 import useApi from "../../hooks/useApi";
-
 import Form from "../../components/Form";
-
 import Button from "../../components/Button";
 
 interface Contex {
@@ -31,12 +26,12 @@ export default function FindPassword(): JSX.Element {
         <div>
           <Form
             className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
-            label="忘記密碼"
+            label={{ description: "忘記密碼" }}
             input="hidden"
           />
           <Form
             className={`${ThemeColor.Slate_Pseudo} mb-10`}
-            label="電子郵件"
+            label={{ description: "電子郵件" }}
           />
           <div className="mb-10 flex items-end justify-between">
             <div className="flex w-full items-end">
@@ -64,12 +59,14 @@ export default function FindPassword(): JSX.Element {
       )}
       {success && (
         <div className="mx-auto h-10 max-w-sm">
-          <Button
-            label="送出成功"
-            buttonColor={ThemeColor.Primary}
-            underline="no-underline"
-            className={`${ThemeColor.Primary_Pseudo} mb-10 text-sm`}
-          />
+          <Link to="/">
+            <Button
+              label="送出成功"
+              buttonColor={ThemeColor.Primary}
+              underline="no-underline"
+              className={`${ThemeColor.Primary_Pseudo} mb-10 text-sm`}
+            />
+          </Link>
         </div>
       )}
     </div>

@@ -2,13 +2,13 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import ThemeColor from "../types/Enum";
+import ThemeColor from "../../types/Enum";
 
-import useApi from "../hooks/useApi";
+import useApi from "../../hooks/useApi";
 
-import Form from "../components/Form";
+import Form from "../../components/Form";
 
-import Button from "../components/Button";
+import Button from "../../components/Button";
 
 interface Contex {
   api?: {
@@ -17,7 +17,7 @@ interface Contex {
   };
 }
 
-export default function Login(): JSX.Element {
+export default function FindPassword(): JSX.Element {
   const api: Contex = useApi();
   console.log(api);
   return (
@@ -25,13 +25,14 @@ export default function Login(): JSX.Element {
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
-          label="註冊會員"
+          label="修改密碼"
           input="hidden"
         />
-        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="電子郵件" />
-        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="姓名" />
-        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="密碼" />
-        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="確認密碼" />
+        <Form className={`${ThemeColor.Slate_Pseudo} mb-10`} label="新密碼" />
+        <Form
+          className={`${ThemeColor.Slate_Pseudo} mb-10`}
+          label="確認新密碼"
+        />
         <div className="mb-10 flex items-end justify-between">
           <div className="flex w-full items-end">
             <Link

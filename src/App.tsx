@@ -4,10 +4,10 @@ import { Routes, Route } from "react-router-dom";
 
 import { ApiProvider } from "./context/ApiContext";
 import Nav from "./Layout/Nav";
-import Login from "./pages/Login";
-import Regist from "./pages/Regist";
-import FindPassword from "./pages/FindPassword";
-import ChangePassword from "./pages/ChangePassword";
+import Login from "./pages/login/Login";
+import Regist from "./pages/login/Regist";
+import FindPassword from "./pages/login/FindPassword";
+import ChangePassword from "./pages/login/ChangePassword";
 
 export default function Router(): JSX.Element {
   return (

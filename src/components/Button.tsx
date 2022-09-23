@@ -14,12 +14,13 @@ export default function Button({
   underline,
 }: IButtonProps): JSX.Element {
   return (
-    <div className={`w-full ${className} box-shadow sm-Pseudo bg-white`}>
-      <input
+    <div className={`h-full w-full ${className} box-shadow sm-Pseudo bg-white`}>
+      <button
         type="button"
-        value={label}
         className={`h-full w-full border-2 ${buttonColor} ${underline}`}
-      />
+      >
+        {label}
+      </button>
     </div>
   );
 }

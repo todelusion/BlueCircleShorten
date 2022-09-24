@@ -12,7 +12,7 @@ export interface IAxiosPOST {
   token?: string;
 }
 
-const hookPOST = async ({
+const usePOST = async ({
   url,
   body,
   token,
@@ -32,7 +32,8 @@ const hookPOST = async ({
     }
   };
   const data = await axiosPOST();
+  console.log(data);
   return data;
 };
 
-export default hookPOST;
+export default usePOST;

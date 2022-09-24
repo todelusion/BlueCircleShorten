@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import ThemeColor from "../../types/Enum";
+import { ThemeColor, PendingType } from "../../types/Enum";
 import type { IApiReducer } from "../../context/ApiContext";
 
 import useApi from "../../hooks/useApi";
+import usePendingResult from "../../hooks/usePendingResult";
+
 import Form from "../../components/Form";
 import Button from "../../components/Button";
 
@@ -22,14 +24,24 @@ export default function Login(): JSX.Element {
   // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
-  const { state, resData, dispatch, baseUrl }: IApiReducer = useApi();
+  const { state, dispatch, baseUrl }: IApiReducer = useApi();
   const navigate = useNavigate();
+  const { pendingResult, handleResult } = usePendingResult();
 
   useEffect(() => {
     // if (resData !== undefined && resData.status === "success") navigate("/");
-    void state.then((res) => {
-      console.log(res);
-      // alert("請填寫正確資訊");
+    void state.then((value): void => {
+      if (value === undefined)
+        return handleResult(PendingType.isPending, false);
+      if (value.user === undefined) {
+        handleResult(PendingType.isPending, false);
+        handleResult(PendingType.isError, true);
+        setTimeout(() => {
+          handleResult(PendingType.isError, false);
+        }, 1000);
+        return undefined;
+      }
+      return navigate("/home");
     });
   }, [state]);
 
@@ -44,17 +56,24 @@ export default function Login(): JSX.Element {
 
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
-    console.log(RegistInfo);
-    const res = dispatch({
+    handleResult(PendingType.isPending, true);
+    return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },
     });
-    return console.log(res);
   };
 
   return (
     <>
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
+        {pendingResult.isPending && (
+          <h1 className="fixed z-10 bg-slate-900 text-4xl text-white">
+            Loading
+          </h1>
+        )}
+        {pendingResult.isError && (
+          <h1 className="fixed z-10 bg-slate-900 text-4xl text-white">Error</h1>
+        )}
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
           label={{ name: "註冊會員", description: "註冊會員" }}

@@ -7,7 +7,12 @@
 2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
-import { AxiosPromise, AxiosResponse } from "axios";
+import {
+  AxiosError,
+  AxiosPromise,
+  AxiosResponse,
+  AxiosResponseTransformer,
+} from "axios";
 import { createContext, useEffect, useReducer, useState } from "react";
 import hookGET from "../hooks/hookGET";
 import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";
@@ -16,7 +21,7 @@ interface Props {
   children: JSX.Element;
 }
 export interface IApiReducer {
-  state: Promise<void>;
+  state: Promise<any>;
   dispatch: React.Dispatch<AxiosType>;
   baseUrl: string;
   resData: {

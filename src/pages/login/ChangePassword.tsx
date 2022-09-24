@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import ThemeColor from "../../types/Enum";
+import { ThemeColor } from "../../types/Enum";
 
 import useApi from "../../hooks/useApi";
 

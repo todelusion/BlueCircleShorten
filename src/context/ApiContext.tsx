@@ -7,12 +7,6 @@
 2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
-import {
-  AxiosError,
-  AxiosPromise,
-  AxiosResponse,
-  AxiosResponseTransformer,
-} from "axios";
 import { createContext, useEffect, useReducer, useState } from "react";
 import hookGET from "../hooks/hookGET";
 import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";

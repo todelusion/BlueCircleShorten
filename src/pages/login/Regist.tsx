@@ -43,6 +43,7 @@ export default function Login(): JSX.Element {
       }
       return navigate("/home");
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   // function expression

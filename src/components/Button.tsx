@@ -1,4 +1,4 @@
-import ThemeColor from "../types/Enum";
+import { ThemeColor } from "../types/Enum";
 
 export interface IButtonProps {
   handleClick?: () => void;

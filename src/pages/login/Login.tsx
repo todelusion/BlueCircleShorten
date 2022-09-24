@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import ThemeColor from "../../types/Enum";
 
 import useApi from "../../hooks/useApi";
-import hookPOST from "../../hooks/hookPOST";
 import type { IApiReducer } from "../../context/ApiContext";
 
 import Form from "../../components/Form";
@@ -16,17 +15,8 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { state, dispatch }: IApiReducer = useApi();
-
-  // void hookPOST({
-  //   url: "https://fast-headland-09301.herokuapp.com/users/sign_up",
-  //   body: {
-  //     email: "789Ds89f@gmail.com",
-  //     name: "79541",
-  //     password: "4654F*Ds89f",
-  //     confirmPassword: "4654F*Ds89f",
-  //   },
-  // });
+  const { state, dispatch, baseUrl, resData }: IApiReducer = useApi();
+  console.log("on login page", resData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -37,7 +27,12 @@ export default function Login(): JSX.Element {
   };
 
   const onSubmit = (): void => {
+    if (dispatch === undefined) return window.location.reload();
     console.log(loginInfo);
+    return dispatch({
+      type: "POST",
+      payload: { url: `${baseUrl}/users/sign_up`, body: loginInfo },
+    });
   };
 
   return (

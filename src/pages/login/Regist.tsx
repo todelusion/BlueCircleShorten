@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import ThemeColor from "../../types/Enum";
 import type { IApiReducer } from "../../context/ApiContext";
@@ -22,10 +22,18 @@ export default function Login(): JSX.Element {
   // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl, resData }: IApiReducer = useApi();
+  const { state, resData, dispatch, baseUrl }: IApiReducer = useApi();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // if (resData !== undefined && resData.status === "success") navigate("/");
+    void state.then((res) => {
+      console.log(res);
+      // alert("請填寫正確資訊");
+    });
+  }, [state]);
 
   // function expression
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setRegistInfo((prevState: typeof initialState) => ({
@@ -37,10 +45,11 @@ export default function Login(): JSX.Element {
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
     console.log(RegistInfo);
-    return dispatch({
+    const res = dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },
     });
+    return console.log(res);
   };
 
   return (

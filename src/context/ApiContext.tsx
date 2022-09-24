@@ -7,6 +7,7 @@
 2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
+import { AxiosPromise, AxiosResponse } from "axios";
 import { createContext, useEffect, useReducer, useState } from "react";
 import hookGET from "../hooks/hookGET";
 import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";
@@ -15,10 +16,12 @@ interface Props {
   children: JSX.Element;
 }
 export interface IApiReducer {
-  state: Promise<Response>;
+  state: Promise<void>;
   dispatch: React.Dispatch<AxiosType>;
   baseUrl: string;
-  resData: Response | unknown;
+  resData: {
+    status: string;
+  };
 }
 
 type AxiosType =
@@ -27,19 +30,21 @@ type AxiosType =
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
-const initialState = new Promise((resolve) => resolve(undefined));
+const initialState = new Promise((resolve) => {
+  resolve(undefined);
+});
 
 const axiosReducer = async (
-  state: Promise<Response | unknown>,
+  state: Promise<boolean | unknown>,
   action: AxiosType
-): Promise<Response | unknown> => {
+): Promise<boolean | unknown> => {
   switch (action.type) {
     case "GET":
       return hookGET(action.payload);
     case "POST":
       return hookPOST(action.payload);
     default:
-      throw new Error();
+      throw new Error("AXIOS 執行失敗");
   }
 };
 
@@ -55,7 +60,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
       const res = await state;
       setResData(res);
     };
-
     parsePromise().catch((error) => {
       console.log(error);
     });

@@ -7,13 +7,7 @@
 2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import hookGET from "../hooks/hookGET";
 import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";
 
@@ -24,6 +18,7 @@ export interface IApiReducer {
   state: Promise<Response>;
   dispatch: React.Dispatch<AxiosType>;
   baseUrl: string;
+  resData: Response | unknown;
 }
 
 type AxiosType =
@@ -52,15 +47,13 @@ export const ApiContext = createContext({});
 
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
-  const [data, setData] = useState<object | unknown>({});
+  const [resData, setResData] = useState<Response | unknown>({});
 
   // 每當parsePromise函式被重新宣告（在記憶體的位置發生變化）就觸發useEffect
   useEffect(() => {
     const parsePromise = async (): Promise<void> => {
-      console.log(state);
       const res = await state;
-      console.log(res);
-      setData(res);
+      setResData(res);
     };
 
     parsePromise().catch((error) => {
@@ -68,10 +61,9 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
     });
   }, [state]);
 
-  console.log("inside ApiProvider...");
-  console.log(data);
+  console.log("inside ApiProvider...", resData);
   return (
-    <ApiContext.Provider value={{ state, dispatch, baseUrl }}>
+    <ApiContext.Provider value={{ state, dispatch, baseUrl, resData }}>
       {children}
     </ApiContext.Provider>
   );

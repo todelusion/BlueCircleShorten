@@ -15,11 +15,16 @@ const initialState = {
   confirmPassword: "",
 };
 
+const RegExpEmail = /^[a-zA-Z_-\d]+@[a-zA-Z_-\d]+(\.[a-zA-Z_-\d]+)+$/g;
+const RegExpPassword = /^(?![a-zA-Z\d]+$)(?![a-z\W\d_]+$)[a-zA-Z\d_\W]{8,32}$/g;
+
 export default function Login(): JSX.Element {
+  // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
+  const { state, dispatch, baseUrl, resData }: IApiReducer = useApi();
 
-  const { state, dispatch, baseUrl }: IApiReducer = useApi();
+  // function expression
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -28,11 +33,11 @@ export default function Login(): JSX.Element {
       [name]: value,
     }));
   };
-  if (dispatch === undefined) return <h1>Loading</h1>;
 
   const onSubmit = (): void => {
+    if (dispatch === undefined) return window.location.reload();
     console.log(RegistInfo);
-    dispatch({
+    return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },
     });
@@ -51,21 +56,39 @@ export default function Login(): JSX.Element {
           className={`${ThemeColor.Slate_Pseudo} mb-10`}
           label={{ name: "email", description: "電子郵件" }}
           handleChange={handleChange}
+          errorHint={{
+            status: RegistInfo.email.match(RegExpEmail) === null,
+            message: "請輸入正確的電子郵件格式",
+          }}
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10`}
           label={{ name: "name", description: "姓名" }}
           handleChange={handleChange}
+          errorHint={{
+            status: RegistInfo.name.length === 0,
+            message: "請輸入姓名",
+          }}
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10`}
           label={{ name: "password", description: "密碼" }}
           handleChange={handleChange}
+          errorHint={{
+            status: RegistInfo.password.match(RegExpPassword) === null,
+            message: "｜密碼至少8個字元以上｜包含1個大小與1個特殊字元｜",
+          }}
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-5`}
           label={{ name: "confirmPassword", description: "確認密碼" }}
           handleChange={handleChange}
+          errorHint={{
+            status:
+              RegistInfo.password !== RegistInfo.confirmPassword ||
+              RegistInfo.confirmPassword.length === 0,
+            message: "請確認密碼是否一致",
+          }}
         />
         <div className="mb-10 flex items-end justify-between">
           <div className="flex w-full items-end">

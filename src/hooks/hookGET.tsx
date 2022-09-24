@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const useFetch = (url: string): object => {
-  const axiosGET = async (): Promise<void> => {
+const hookFetch = async (url: string): Promise<Response> => {
+  const axiosGET = async (): Promise<Response> => {
     const res = await axios.get(url, {
       headers: {
         Authorization: "",
@@ -9,8 +9,7 @@ const useFetch = (url: string): object => {
     });
     return res.data;
   };
-
   return axiosGET();
 };
 
-export default useFetch;
+export default hookFetch;

@@ -12,8 +12,11 @@ export interface IAxiosPOST {
   token?: string;
 }
 
-const usePOST = async ({ url, body, token }: IAxiosPOST): Promise<Response> => {
-  console.log(url, body, token);
+const hookPOST = async ({
+  url,
+  body,
+  token,
+}: IAxiosPOST): Promise<Response> => {
   const headers = new Headers(token);
   const axiosPOST = async (): Promise<Response> => {
     try {
@@ -26,9 +29,12 @@ const usePOST = async ({ url, body, token }: IAxiosPOST): Promise<Response> => {
       return res.data;
     } catch (error) {
       console.log(error);
+      throw new Error();
     }
   };
-  return axiosPOST();
+  const data = await axiosPOST();
+  console.log(data);
+  return data;
 };
 
-export default usePOST;
+export default hookPOST;

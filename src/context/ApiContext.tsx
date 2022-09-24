@@ -7,9 +7,15 @@
 2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
-import { createContext, useEffect, useReducer } from "react";
-import useGET from "../hooks/useGET";
-import usePOST, { IAxiosPOST } from "../hooks/usePOST";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
+import hookGET from "../hooks/hookGET";
+import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";
 
 interface Props {
   children: JSX.Element;
@@ -26,12 +32,17 @@ type AxiosType =
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
-const axiosReducer = (state: object, action: AxiosType): object => {
+const initialState = new Promise((resolve) => resolve(undefined));
+
+const axiosReducer = async (
+  state: Promise<Response | unknown>,
+  action: AxiosType
+): Promise<Response | unknown> => {
   switch (action.type) {
     case "GET":
-      return useGET(action.payload);
+      return hookGET(action.payload);
     case "POST":
-      return usePOST(action.payload);
+      return hookPOST(action.payload);
     default:
       throw new Error();
   }
@@ -40,11 +51,25 @@ const axiosReducer = (state: object, action: AxiosType): object => {
 export const ApiContext = createContext({});
 
 export const ApiProvider = ({ children }: Props): JSX.Element => {
-  const [state, dispatch] = useReducer(axiosReducer, {});
-  useEffect(() => {}, []);
+  const [state, dispatch] = useReducer(axiosReducer, initialState);
+  const [data, setData] = useState<object | unknown>({});
+
+  // 每當parsePromise函式被重新宣告（在記憶體的位置發生變化）就觸發useEffect
+  useEffect(() => {
+    const parsePromise = async (): Promise<void> => {
+      console.log(state);
+      const res = await state;
+      console.log(res);
+      setData(res);
+    };
+
+    parsePromise().catch((error) => {
+      console.log(error);
+    });
+  }, [state]);
 
   console.log("inside ApiProvider...");
-  console.log(state);
+  console.log(data);
   return (
     <ApiContext.Provider value={{ state, dispatch, baseUrl }}>
       {children}

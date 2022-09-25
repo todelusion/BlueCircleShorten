@@ -1,5 +1,5 @@
 import axios from "axios";
-import Headers from "../utils/Headers";
+import Headers from "./Headers";
 
 export interface IAxiosPOST {
   url: string;

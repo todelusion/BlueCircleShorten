@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ThemeColor } from "../../types/Enum";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ThemeColor, PendingType } from "../../types/Enum";
 
 import useApi from "../../hooks/useApi";
 import type { IApiReducer } from "../../context/ApiContext";
+import usePendingResult from "../../hooks/usePendingResult";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
@@ -15,7 +16,30 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl, resData, token }: IApiReducer = useApi();
+  const { state, dispatch, baseUrl }: IApiReducer = useApi();
+  const { pendingResult, handleResult } = usePendingResult();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handlePromiseResult = async (): Promise<void> => {
+      const value = await state;
+      console.log(value);
+      if (value === undefined) return;
+      handleResult(PendingType.isPending, false);
+      if (value.user === undefined) {
+        handleResult(PendingType.isError, true);
+        setTimeout(() => {
+          handleResult(PendingType.isError, false);
+        }, 1000);
+        return;
+      }
+      navigate("/home");
+    };
+
+    handlePromiseResult().catch((error) => error);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

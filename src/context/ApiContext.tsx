@@ -8,8 +8,8 @@
 */
 
 import { createContext, useEffect, useReducer, useState } from "react";
-import hookGET from "../hooks/hookGET";
-import hookPOST, { IAxiosPOST } from "../hooks/hookPOST";
+import axiosGET from "../utils/axiosGET";
+import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
 
 interface Props {
   children: JSX.Element;
@@ -42,9 +42,9 @@ const axiosReducer = async (
 ): Promise<any> => {
   switch (action.type) {
     case "GET":
-      return hookGET(action.payload);
+      return axiosGET(action.payload);
     case "POST":
-      return hookPOST(action.payload);
+      return axiosPOST(action.payload);
     case "RESET":
       return undefined;
     default:

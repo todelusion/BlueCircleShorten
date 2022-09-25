@@ -9,6 +9,9 @@ import usePendingResult from "../../hooks/usePendingResult";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
+import PenginResultModal from "../../components/PenginResultModal";
+
+import { RegExpEmail, RegExpPassword } from "../../utils/RegExp";
 
 const initialState = {
   email: "",
@@ -16,9 +19,6 @@ const initialState = {
   password: "",
   confirmPassword: "",
 };
-
-const RegExpEmail = /^[a-zA-Z_-\d]+@[a-zA-Z_-\d]+(\.[a-zA-Z_-\d]+)+$/g;
-const RegExpPassword = /^(?![a-zA-Z\d]+$)(?![a-z\W\d_]+$)[a-zA-Z\d_\W]{8,32}$/g;
 
 export default function Login(): JSX.Element {
   // react hooks
@@ -68,18 +68,16 @@ export default function Login(): JSX.Element {
     });
   };
 
-  // console.log(resData, token);
   return (
     <>
+      <div
+        className={
+          Object.values(pendingResult).includes(true) ? "show" : "close"
+        }
+      >
+        <PenginResultModal pendingResult={pendingResult} />
+      </div>
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
-        {pendingResult.isPending && (
-          <h1 className="fixed z-10 bg-slate-900 text-4xl text-white">
-            Loading
-          </h1>
-        )}
-        {pendingResult.isError && (
-          <h1 className="fixed z-10 bg-slate-900 text-4xl text-white">Error</h1>
-        )}
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
           label={{ name: "註冊會員", description: "註冊會員" }}

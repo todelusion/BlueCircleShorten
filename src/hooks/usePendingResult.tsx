@@ -7,9 +7,15 @@ const initialState = {
   isError: false,
 };
 
+export interface PendingResult {
+  isPending: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+}
+
 interface IUsePendingResult {
   handleResult: (pendingType: PendingType, boolean: boolean) => void;
-  pendingResult: typeof initialState;
+  pendingResult: PendingResult;
 }
 
 export default function usePendingResult(): IUsePendingResult {
@@ -18,6 +24,5 @@ export default function usePendingResult(): IUsePendingResult {
   const handleResult = (pendingType: string, boolean: boolean): void => {
     setPendingResult((prevState) => ({ ...prevState, [pendingType]: boolean }));
   };
-
   return { pendingResult, handleResult };
 }

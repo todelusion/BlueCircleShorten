@@ -4,9 +4,9 @@ import Headers from "./Headers";
 export interface IAxiosPOST {
   url: string;
   body: {
-    email: string;
+    email?: string;
     name?: string;
-    password: string;
+    password?: string;
     confirmPassword?: string;
   };
   token?: string;

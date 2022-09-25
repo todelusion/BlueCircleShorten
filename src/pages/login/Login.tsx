@@ -10,7 +10,8 @@ import usePendingResult from "../../hooks/usePendingResult";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
-import PenginResultModal from "../../components/PenginResultModal";
+import PendingResultModal from "../../components/PendingResultModal";
+import { RegExpEmail } from "../../utils/RegExp";
 
 const initialState = {
   email: "",
@@ -21,9 +22,10 @@ export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
   const { pendingResult, handleResult } = usePendingResult();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    handlePromiseResult(state, handleResult, useNavigate, "/home").catch(
+    handlePromiseResult({ state, handleResult, navigate, path: "/home" }).catch(
       (error) => error
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,13 +56,17 @@ export default function Login(): JSX.Element {
           Object.values(pendingResult).includes(true) ? "show" : "close"
         }
       >
-        <PenginResultModal pendingResult={pendingResult} />
+        <PendingResultModal pendingResult={pendingResult} />
       </div>
       <div className="w-full max-w-sm md:max-w-lg lg:text-lg">
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-9 lg:h-24`}
           label={{ name: "email", description: "電子郵件" }}
           handleChange={handleChange}
+          errorHint={{
+            status: loginInfo.email.match(RegExpEmail) === null,
+            message: "請輸入正確的電子郵件格式",
+          }}
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-14 lg:h-24`}

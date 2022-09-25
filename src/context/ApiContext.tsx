@@ -8,6 +8,7 @@
 */
 
 import { createContext, useEffect, useReducer, useState } from "react";
+import { ErrorResponse, TokenResponse } from "../types/Interface";
 import axiosGET from "../utils/axiosGET";
 import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
 
@@ -18,11 +19,8 @@ export interface IApiReducer {
   state: Promise<any>;
   dispatch: React.Dispatch<AxiosType>;
   baseUrl: string;
-  resData: {
-    status: string;
-    user?: object;
-  };
   token: string;
+  resData: ErrorResponse | TokenResponse | null;
 }
 
 type AxiosType =
@@ -56,7 +54,9 @@ export const ApiContext = createContext({});
 
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
-  const [resData, setResData] = useState<Response | unknown>({});
+  const [resData, setResData] = useState<ErrorResponse | TokenResponse | null>(
+    null
+  );
   const [token, setToken] = useState("");
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect

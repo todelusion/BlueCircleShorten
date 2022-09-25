@@ -9,7 +9,7 @@ import usePendingResult from "../../hooks/usePendingResult";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
-import PenginResultModal from "../../components/PenginResultModal";
+import PendingResultModal from "../../components/PendingResultModal";
 
 import { RegExpEmail, RegExpPassword } from "../../utils/RegExp";
 import handlePromiseResult from "../../utils/handlePromiseResult";
@@ -30,7 +30,7 @@ export default function Login(): JSX.Element {
   const { pendingResult, handleResult } = usePendingResult();
 
   useEffect(() => {
-    handlePromiseResult(state, handleResult, navigate, "/home").catch(
+    handlePromiseResult({ state, handleResult, navigate, path: "/home" }).catch(
       (error) => error
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +62,7 @@ export default function Login(): JSX.Element {
           Object.values(pendingResult).includes(true) ? "show" : "close"
         }
       >
-        <PenginResultModal pendingResult={pendingResult} />
+        <PendingResultModal pendingResult={pendingResult} />
       </div>
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
         <Form

@@ -1,7 +1,6 @@
 import { ThemeColor } from "../types/Enum";
 
 export interface IButtonProps {
-  handleClick?: () => void;
   onSubmit?: () => void;
   onReset?: () => void;
   label: string;
@@ -11,7 +10,6 @@ export interface IButtonProps {
 }
 
 export default function Button({
-  handleClick,
   onSubmit,
   onReset,
   label,
@@ -23,7 +21,6 @@ export default function Button({
     <div className={`h-full w-full ${className} box-shadow sm-Pseudo bg-white`}>
       <button
         onClick={() => {
-          if (handleClick !== undefined) handleClick();
           if (onSubmit !== undefined) onSubmit();
           if (onReset !== undefined) onReset();
         }}

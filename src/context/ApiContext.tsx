@@ -20,12 +20,15 @@ export interface IApiReducer {
   baseUrl: string;
   resData: {
     status: string;
+    user?: object;
   };
+  token: string;
 }
 
 type AxiosType =
   | { type: "GET"; payload: string }
-  | { type: "POST"; payload: IAxiosPOST };
+  | { type: "POST"; payload: IAxiosPOST }
+  | { type: "RESET" };
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
@@ -36,12 +39,14 @@ const initialState = new Promise((resolve) => {
 const axiosReducer = async (
   state: Promise<boolean | unknown>,
   action: AxiosType
-): Promise<boolean | unknown> => {
+): Promise<any> => {
   switch (action.type) {
     case "GET":
       return hookGET(action.payload);
     case "POST":
       return hookPOST(action.payload);
+    case "RESET":
+      return undefined;
     default:
       throw new Error("AXIOS 執行失敗");
   }
@@ -52,21 +57,20 @@ export const ApiContext = createContext({});
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
   const [resData, setResData] = useState<Response | unknown>({});
+  const [token, setToken] = useState("");
 
-  // 每當parsePromise函式被重新宣告（在記憶體的位置發生變化）就觸發useEffect
+  // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
   useEffect(() => {
     const parsePromise = async (): Promise<void> => {
       const res = await state;
       setResData(res);
+      if (res.user !== undefined) setToken(res.user.token);
     };
-    parsePromise().catch((error) => {
-      console.log(error);
-    });
+    parsePromise().catch((error) => error);
   }, [state]);
 
-  console.log("inside ApiProvider...", resData);
   return (
-    <ApiContext.Provider value={{ state, dispatch, baseUrl, resData }}>
+    <ApiContext.Provider value={{ state, dispatch, baseUrl, resData, token }}>
       {children}
     </ApiContext.Provider>
   );

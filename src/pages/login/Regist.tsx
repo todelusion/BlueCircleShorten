@@ -29,20 +29,23 @@ export default function Login(): JSX.Element {
   const { pendingResult, handleResult } = usePendingResult();
 
   useEffect(() => {
-    // if (resData !== undefined && resData.status === "success") navigate("/");
-    void state.then((value): void => {
-      if (value === undefined)
-        return handleResult(PendingType.isPending, false);
+    const handlePromiseResult = async (): Promise<void> => {
+      const value = await state;
+      console.log(value);
+      if (value === undefined) return;
+      handleResult(PendingType.isPending, false);
       if (value.user === undefined) {
-        handleResult(PendingType.isPending, false);
         handleResult(PendingType.isError, true);
         setTimeout(() => {
           handleResult(PendingType.isError, false);
         }, 1000);
-        return undefined;
+        return;
       }
-      return navigate("/home");
-    });
+      navigate("/home");
+    };
+
+    handlePromiseResult().catch((error) => error);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
@@ -56,6 +59,7 @@ export default function Login(): JSX.Element {
   };
 
   const onSubmit = (): void => {
+    console.log(RegistInfo);
     if (dispatch === undefined) return window.location.reload();
     handleResult(PendingType.isPending, true);
     return dispatch({
@@ -64,6 +68,7 @@ export default function Login(): JSX.Element {
     });
   };
 
+  // console.log(resData, token);
   return (
     <>
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
@@ -130,6 +135,7 @@ export default function Login(): JSX.Element {
                 buttonColor={ThemeColor.Black}
                 underline="underline"
                 className={`${ThemeColor.Slate_Pseudo} text-sm`}
+                onReset={() => dispatch({ type: "RESET" })}
               />
             </Link>
           </div>

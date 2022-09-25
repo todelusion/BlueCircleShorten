@@ -15,8 +15,7 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl, resData }: IApiReducer = useApi();
-  console.log("on login page", resData);
+  const { state, dispatch, baseUrl, resData, token }: IApiReducer = useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

@@ -32,7 +32,6 @@ const usePOST = async ({
     }
   };
   const data = await axiosPOST();
-  console.log(data);
   return data;
 };
 

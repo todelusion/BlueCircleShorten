@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeColor, PendingType } from "../../types/Enum";
 
-import useApi from "../../hooks/useApi";
 import type { IApiReducer } from "../../context/ApiContext";
+import handlePromiseResult from "../../utils/handlePromiseResult";
+
+import useApi from "../../hooks/useApi";
 import usePendingResult from "../../hooks/usePendingResult";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
+import PenginResultModal from "../../components/PenginResultModal";
 
 const initialState = {
   email: "",
@@ -18,26 +21,11 @@ export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
   const { pendingResult, handleResult } = usePendingResult();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const handlePromiseResult = async (): Promise<void> => {
-      const value = await state;
-      console.log(value);
-      if (value === undefined) return;
-      handleResult(PendingType.isPending, false);
-      if (value.user === undefined) {
-        handleResult(PendingType.isError, true);
-        setTimeout(() => {
-          handleResult(PendingType.isError, false);
-        }, 1000);
-        return;
-      }
-      navigate("/home");
-    };
-
-    handlePromiseResult().catch((error) => error);
-
+    handlePromiseResult(state, handleResult, useNavigate, "/home").catch(
+      (error) => error
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
@@ -52,14 +40,22 @@ export default function Login(): JSX.Element {
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
     console.log(loginInfo);
+    handleResult(PendingType.isPending, true);
     return dispatch({
       type: "POST",
-      payload: { url: `${baseUrl}/users/sign_up`, body: loginInfo },
+      payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },
     });
   };
 
   return (
     <>
+      <div
+        className={
+          Object.values(pendingResult).includes(true) ? "show" : "close"
+        }
+      >
+        <PenginResultModal pendingResult={pendingResult} />
+      </div>
       <div className="w-full max-w-sm md:max-w-lg lg:text-lg">
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-9 lg:h-24`}
@@ -77,6 +73,7 @@ export default function Login(): JSX.Element {
             className="h-11 w-full max-w-[50px] md:h-14 md:max-w-[70px]"
           >
             <Button
+              onReset={() => dispatch({ type: "RESET" })}
               label="註冊"
               buttonColor={ThemeColor.Primary}
               underline="underline"

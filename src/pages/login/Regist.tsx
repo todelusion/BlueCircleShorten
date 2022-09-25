@@ -12,6 +12,7 @@ import Button from "../../components/Button";
 import PenginResultModal from "../../components/PenginResultModal";
 
 import { RegExpEmail, RegExpPassword } from "../../utils/RegExp";
+import handlePromiseResult from "../../utils/handlePromiseResult";
 
 const initialState = {
   email: "",
@@ -29,23 +30,9 @@ export default function Login(): JSX.Element {
   const { pendingResult, handleResult } = usePendingResult();
 
   useEffect(() => {
-    const handlePromiseResult = async (): Promise<void> => {
-      const value = await state;
-      console.log(value);
-      if (value === undefined) return;
-      handleResult(PendingType.isPending, false);
-      if (value.user === undefined) {
-        handleResult(PendingType.isError, true);
-        setTimeout(() => {
-          handleResult(PendingType.isError, false);
-        }, 1000);
-        return;
-      }
-      navigate("/home");
-    };
-
-    handlePromiseResult().catch((error) => error);
-
+    handlePromiseResult(state, handleResult, navigate, "/home").catch(
+      (error) => error
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 

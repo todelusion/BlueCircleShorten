@@ -15,7 +15,7 @@ const handlePromiseResult = async (
 ): Promise<void> => {
   const { state, setPendingStatus, navigate, path } = promiseResultConfig;
   const value = await state;
-  console.log(value);
+  // console.log(value);
 
   if (value === undefined) return;
   setPendingStatus(PendingType.isPending, false);

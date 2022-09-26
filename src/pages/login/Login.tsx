@@ -23,23 +23,23 @@ export default function Login(): JSX.Element {
   const { state, dispatch, baseUrl, token }: IApiReducer = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
   const navigate = useNavigate();
-  console.log(token);
+  console.log("token", token);
 
-  useEffect(() => {
-    const checkHTTPmethods = async (): Promise<void> => {
-      const value = await state;
-      if (value.config.method === "patch") return undefined;
-      // return handlePromiseResult({
-      //   state,
-      //   setPendingStatus,
-      //   navigate,
-      //   path: "/home",
-      // }).catch((error) => error);
-    };
-    checkHTTPmethods().catch((err) => err);
+  // useEffect(() => {
+  //   const checkHTTPmethods = async (): Promise<void> => {
+  //     const value = await state;
+  //     if (value.config.method === "patch") return undefined;
+  //     return handlePromiseResult({
+  //       state,
+  //       setPendingStatus,
+  //       navigate,
+  //       path: "/home",
+  //     }).catch((error) => error);
+  //   };
+  //   checkHTTPmethods().catch((err) => err);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -56,8 +56,8 @@ export default function Login(): JSX.Element {
       loginInfo.email.match(RegExpEmail) === null ||
       loginInfo.password.match(RegExpPassword) === null
     )
-      return undefined;
-    setPendingStatus(PendingType.isPending, true);
+      // return undefined;
+      setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },

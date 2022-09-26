@@ -15,12 +15,7 @@
 //   message: string;
 // }
 
-// export interface Response {
-//   data: Data;
-//   status: number;
-//   statusText: string;
-//   config: Config;
-// }
+
 // export interface Data {
 //   message: string;
 // }
@@ -37,7 +32,7 @@
 //   data: string;
 // }
 
-export interface Response extends Data {}
+// export interface Response extends Data {}
 
 export interface ErrorResponse {
   config: Config;
@@ -52,6 +47,13 @@ export interface SuccessResponse {
   data: Data;
   status: number;
   statusText: string;
+}
+
+export interface Response {
+  data: Data;
+  status: number;
+  statusText: string;
+  config: Config;
 }
 
 export interface Data {

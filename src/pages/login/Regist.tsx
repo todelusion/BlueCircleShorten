@@ -29,15 +29,15 @@ export default function Login(): JSX.Element {
   const navigate = useNavigate();
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
-  useEffect(() => {
-    handlePromiseResult({
-      state,
-      setPendingStatus,
-      navigate,
-      path: "/home",
-    }).catch((error) => error);
+  // useEffect(() => {
+  //   handlePromiseResult({
+  //     state,
+  //     setPendingStatus,
+  //     navigate,
+  //     path: "/home",
+  //   }).catch((error) => error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  // }, [state]);
 
   // function expression
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

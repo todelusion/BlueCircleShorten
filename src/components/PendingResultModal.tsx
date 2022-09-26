@@ -3,7 +3,7 @@ import successIcon from "../assets/successIcon.svg";
 
 import { PendingResult } from "../hooks/usePendingStatus";
 import useApi from "../hooks/useApi";
-import type { ErrorResponse } from "../types/Interface";
+import { ErrorResponse } from "../types/Schema";
 
 interface IPendingResultModal {
   pendingResult: PendingResult;
@@ -12,24 +12,26 @@ interface IPendingResultModal {
 export default function PendingResultModal({
   pendingResult,
 }: IPendingResultModal): JSX.Element {
-  const { resData, baseUrl } = useApi();
+  const { resData, errorData, baseUrl } = useApi();
+
   const showResultMessage = (): string => {
-    if (resData === undefined || resData === null) return "";
-    if (String(resData.status).startsWith("2"))
-      if (resData.config.url === `${baseUrl}/users/sign_up`) return "註冊成功";
+    if (
+      resData !== null &&
+      resData !== undefined &&
+      resData.config.url === `${baseUrl}/users/sign_up`
+    )
+      return "註冊成功";
 
-    if ((resData as ErrorResponse).response === undefined) return "";
+    if (errorData === null || errorData === undefined) return "";
 
-    if (String((resData as ErrorResponse).response.status).startsWith("4"))
-      return (resData as ErrorResponse).response.data.message;
+    if (String(errorData.response.status).startsWith("4"))
+      return errorData.response.data.message;
 
-    if (String((resData as ErrorResponse).response.status).startsWith("5"))
-      if (
-        (resData as ErrorResponse).response.config.url ===
-        `${baseUrl}/users/sign_in`
-      )
+    if (String(errorData.response.status).startsWith("5"))
+      if (errorData.response.config.url === `${baseUrl}/users/sign_in`)
         return "帳號尚未註冊";
-    return (resData as ErrorResponse).response.data.message;
+
+    return errorData.response.data.message;
   };
 
   return (

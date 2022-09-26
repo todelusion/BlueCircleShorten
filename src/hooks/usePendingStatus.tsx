@@ -1,3 +1,5 @@
+// axios狀態管理鉤子，用在handlePromiseResult()
+
 import { useState } from "react";
 import { PendingType } from "../types/Enum";
 

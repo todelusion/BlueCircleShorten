@@ -1,7 +1,7 @@
 import errorIcon from "../assets/errorIcon.svg";
 import successIcon from "../assets/successIcon.svg";
 
-import { PendingResult } from "../hooks/usePendingResult";
+import { PendingResult } from "../hooks/usePendingStatus";
 import useApi from "../hooks/useApi";
 import {
   ErrorResponse,
@@ -17,7 +17,6 @@ export default function PendingResultModal({
   pendingResult,
 }: IPendingResultModal): JSX.Element {
   const { resData } = useApi();
-
   const showResultMessage = (): string => {
     if (resData === null || resData === undefined) return "";
 
@@ -30,9 +29,7 @@ export default function PendingResultModal({
     if ((resData as ForgetPasswordResponse).message === "已寄出驗證信")
       return (resData as ErrorResponse).message.trim();
 
-    console.log(resData);
-
-    if ((resData as TokenResponse).status === "success") return "註冊成功";
+    if ((resData as TokenResponse).status === "success") return "成功";
 
     return "發生技術錯誤";
   };

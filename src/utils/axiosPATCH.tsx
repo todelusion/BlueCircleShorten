@@ -12,28 +12,24 @@ export interface IAxiosPOST {
   token?: string;
 }
 
-const usePOST = async ({
+const axiosPATCH = async ({
   url,
   body,
   token,
 }: IAxiosPOST): Promise<Response | unknown> => {
-  console.log("request", { url, body, token });
-  const headers = new Headers(token);
-  const axiosPOST = async (): Promise<Response | unknown> => {
-    try {
-      const res = await axios.patch(
-        url,
-        body,
-        headers.Authorization !== undefined ? (headers as object) : {}
-      );
-      console.log(res);
-      return res.data;
-    } catch (error) {
-      return error;
-    }
-  };
-  const data = await axiosPOST();
-  return data;
+  try {
+    console.log(url, body, token !== undefined ? new Headers(token) : {});
+
+    const res = await axios.patch(
+      url,
+      body,
+      token !== undefined ? new Headers(token) : {}
+    );
+    console.log(res);
+    return res;
+  } catch (error) {
+    return error;
+  }
 };
 
-export default usePOST;
+export default axiosPATCH;

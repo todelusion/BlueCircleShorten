@@ -25,12 +25,18 @@ export default function Login(): JSX.Element {
   const navigate = useNavigate();
 
   useEffect(() => {
-    handlePromiseResult({
-      state,
-      setPendingStatus,
-      navigate,
-      path: "/home",
-    }).catch((error) => error);
+    const checkHTTPmethods = async (): Promise<void> => {
+      const value = await state;
+      if (value.config.method === "patch") return undefined;
+      return handlePromiseResult({
+        state,
+        setPendingStatus,
+        navigate,
+        path: "/home",
+      }).catch((error) => error);
+    };
+    checkHTTPmethods().catch((err) => err);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 

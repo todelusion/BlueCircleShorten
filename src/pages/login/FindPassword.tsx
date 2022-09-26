@@ -8,7 +8,7 @@ import Button from "../../components/Button";
 import type { IApiReducer } from "../../context/ApiContext";
 
 import handlePromiseResult from "../../utils/handlePromiseResult";
-import usePendingResult from "../../hooks/usePendingStatus";
+import usePendingStatus from "../../hooks/usePendingStatus";
 import { RegExpEmail } from "../../utils/RegExp";
 import PendingResultModal from "../../components/PendingResultModal";
 
@@ -21,7 +21,7 @@ export default function FindPassword(): JSX.Element {
     useState<typeof initialState>(initialState);
 
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
-  const { pendingResult, setPendingStatus } = usePendingResult();
+  const { pendingResult, setPendingStatus } = usePendingStatus();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function FindPassword(): JSX.Element {
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
     console.log(findPasswordInfo);
+    if (findPasswordInfo.email.match(RegExpEmail) === null) return;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",

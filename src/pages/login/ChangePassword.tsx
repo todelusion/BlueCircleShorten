@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
 
@@ -22,7 +22,6 @@ export default function ChangePassword(): JSX.Element {
   const [newPasswordInfo, setNewPasswordInfo] = useState(initialState);
   const { token } = useParams();
   const navigate = useNavigate();
-  // console.log({ newPasswordInfo, token });
 
   const { state, dispatch, baseUrl } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
@@ -31,7 +30,7 @@ export default function ChangePassword(): JSX.Element {
     handlePromiseResult({ state, setPendingStatus, navigate, path: "/" }).catch(
       (err) => err
     );
-  }, []);
+  }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -39,17 +38,18 @@ export default function ChangePassword(): JSX.Element {
   };
 
   const onSubmit = (): void => {
+    if (dispatch === undefined) return window.location.reload();
     if (
       newPasswordInfo.password.match(RegExpPassword) === null ||
       newPasswordInfo.password !== newPasswordInfo.confirmPassword ||
       newPasswordInfo.confirmPassword.length === 0
     )
-      return;
+      return undefined;
     setPendingStatus(PendingType.isPending, true);
-    dispatch({
+    return dispatch({
       type: "PATCH",
       payload: {
-        url: `${baseUrl}/users/updatePassword`,
+        url: `${baseUrl as string}/users/updatePassword`,
         body: newPasswordInfo,
         token,
       },

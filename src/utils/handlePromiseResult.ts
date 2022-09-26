@@ -1,3 +1,5 @@
+// 負責處理轉址與處理axios狀態管理鉤子
+
 import { NavigateFunction } from "react-router-dom";
 import { PendingType } from "../types/Enum";
 
@@ -12,14 +14,13 @@ const handlePromiseResult = async (
   promiseResultConfig: PromiseResultConfig
 ): Promise<void> => {
   const { state, setPendingStatus, navigate, path } = promiseResultConfig;
-  // console.log(state);
   const value = await state;
+  console.log(value);
 
   if (value === undefined) return;
   setPendingStatus(PendingType.isPending, false);
 
-  if (value.status === "success") {
-    console.log(value);
+  if (value.status === 200) {
     setPendingStatus(PendingType.isSuccess, true);
     setTimeout(() => {
       setPendingStatus(PendingType.isSuccess, false);
@@ -28,7 +29,11 @@ const handlePromiseResult = async (
     return;
   }
 
-  if (value.response.status === 400) {
+  if (
+    value.response.status === 400 ||
+    value.response.status === 404 ||
+    value.response.status === 500
+  ) {
     setPendingStatus(PendingType.isError, true);
     setTimeout(() => {
       setPendingStatus(PendingType.isError, false);

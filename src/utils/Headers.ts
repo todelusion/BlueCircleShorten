@@ -1,9 +1,8 @@
 class Headers {
-  // headers: { token: string };
-  Authorization?: string;
+  headers: { Authorization: string };
 
-  constructor(token?: string) {
-    this.Authorization = token;
+  constructor(token: string) {
+    this.headers = { Authorization: `Bearer ${token}` };
   }
 }
 

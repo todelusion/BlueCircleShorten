@@ -94,7 +94,12 @@ export default function Login(): JSX.Element {
             className={`${ThemeColor.Slate_Pseudo} h-16 max-w-[100px] md:h-20`}
           />
         </div>
-        <Link to="/findpassword">
+        <Link
+          to="/findpassword"
+          onClick={() => {
+            dispatch({ type: "RESET" });
+          }}
+        >
           <button
             type="button"
             className="ml-1 w-full text-left text-xs text-primary underline lg:text-sm"

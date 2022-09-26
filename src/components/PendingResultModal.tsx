@@ -3,7 +3,11 @@ import successIcon from "../assets/successIcon.svg";
 
 import { PendingResult } from "../hooks/usePendingResult";
 import useApi from "../hooks/useApi";
-import { ErrorResponse, ForgetPasswordResponse } from "../types/Interface";
+import {
+  ErrorResponse,
+  ForgetPasswordResponse,
+  TokenResponse,
+} from "../types/Interface";
 
 interface IPendingResultModal {
   pendingResult: PendingResult;
@@ -26,6 +30,10 @@ export default function PendingResultModal({
     if ((resData as ForgetPasswordResponse).message === "已寄出驗證信")
       return (resData as ErrorResponse).message.trim();
 
+    console.log(resData);
+
+    if ((resData as TokenResponse).status === "success") return "註冊成功";
+
     return "發生技術錯誤";
   };
 
@@ -42,12 +50,12 @@ export default function PendingResultModal({
         <li
           className={`${
             pendingResult.isSuccess ? "show" : "close"
-          } absolute flex flex-col items-center`}
+          } absolute left-0 right-0 flex flex-col items-center`}
         >
           <div className="mb-20 -mt-5 h-14 w-20 md:h-20 md:w-32">
-            <img src={successIcon} alt="error" />
+            <img src={successIcon} alt="success" />
           </div>
-          <p className="w-max font-serif text-2xl font-black text-primary">
+          <p className="text-center font-serif text-2xl font-black text-primary">
             {showResultMessage()}
           </p>
         </li>

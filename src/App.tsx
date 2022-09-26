@@ -8,6 +8,7 @@ import Regist from "./pages/login/Regist";
 import FindPassword from "./pages/login/FindPassword";
 import ChangePassword from "./pages/login/ChangePassword";
 import Home from "./pages/home/Home";
+import FindPasswordSuccess from "./pages/login/FindPasswordSuccess";
 
 export default function Router(): JSX.Element {
   return (
@@ -16,6 +17,7 @@ export default function Router(): JSX.Element {
         <Route path="/" element={<Login />} />
         <Route path="/regist" element={<Regist />} />
         <Route path="/findpassword" element={<FindPassword />} />
+        <Route path="/findpassword/success" element={<FindPasswordSuccess />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/changepassword/:id" element={<ChangePassword />} />
       </Route>

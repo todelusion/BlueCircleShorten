@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PendingType, ThemeColor } from "../../types/Enum";
 import useApi from "../../hooks/useApi";
 import Form from "../../components/Form";
@@ -21,11 +21,16 @@ export default function FindPassword(): JSX.Element {
     useState<typeof initialState>(initialState);
 
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
-
   const { pendingResult, handleResult } = usePendingResult();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    handlePromiseResult({ state, handleResult }).catch((error) => error);
+    handlePromiseResult({
+      state,
+      handleResult,
+      navigate,
+      path: "/findpassword/success",
+    }).catch((error) => error);
   }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -46,8 +51,6 @@ export default function FindPassword(): JSX.Element {
     });
   };
   // console.log(findPasswordInfo);
-  console.log(pendingResult);
-
   return (
     <>
       <div
@@ -58,59 +61,45 @@ export default function FindPassword(): JSX.Element {
         <PendingResultModal pendingResult={pendingResult} />
       </div>
       <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
-        {!pendingResult.isSuccess && (
-          <div>
-            <Form
-              className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
-              label={{ description: "忘記密碼" }}
-              input="hidden"
-            />
-            <Form
-              className={`${ThemeColor.Slate_Pseudo} mb-10`}
-              label={{ name: "email", description: "電子郵件" }}
-              handleChange={handleChange}
-              errorHint={{
-                status: findPasswordInfo.email.match(RegExpEmail) === null,
-                message: "請輸入正確的電子郵件格式",
-              }}
-            />
-            <div className="mb-10 flex items-end justify-between">
-              <div className="flex w-full items-end">
-                <Link
-                  to="/"
-                  className="h-11 w-full max-w-[50px] md:h-14 md:max-w-[70px]"
-                >
-                  <Button
-                    label="返回"
-                    buttonColor={ThemeColor.Primary}
-                    underline="underline"
-                    className={`${ThemeColor.Primary_Pseudo} text-sm`}
-                    onReset={() => dispatch({ type: "RESET" })}
-                  />
-                </Link>
-              </div>
-              <Button
-                label="送出"
-                buttonColor={ThemeColor.Black}
-                underline="no-underline"
-                className={`${ThemeColor.Slate_Pseudo} h-16 w-full max-w-[100px] md:h-20`}
-                onSubmit={onSubmit}
-              />
+        <div>
+          <Form
+            className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
+            label={{ description: "忘記密碼" }}
+            input="hidden"
+          />
+          <Form
+            className={`${ThemeColor.Slate_Pseudo} mb-10`}
+            label={{ name: "email", description: "電子郵件" }}
+            handleChange={handleChange}
+            errorHint={{
+              status: findPasswordInfo.email.match(RegExpEmail) === null,
+              message: "請輸入正確的電子郵件格式",
+            }}
+          />
+          <div className="mb-10 flex items-end justify-between">
+            <div className="flex w-full items-end">
+              <Link
+                to="/"
+                className="h-11 w-full max-w-[50px] md:h-14 md:max-w-[70px]"
+              >
+                <Button
+                  label="返回"
+                  buttonColor={ThemeColor.Primary}
+                  underline="underline"
+                  className={`${ThemeColor.Primary_Pseudo} text-sm`}
+                  onReset={() => dispatch({ type: "RESET" })}
+                />
+              </Link>
             </div>
+            <Button
+              label="送出"
+              buttonColor={ThemeColor.Black}
+              underline="no-underline"
+              className={`${ThemeColor.Slate_Pseudo} h-16 w-full max-w-[100px] md:h-20`}
+              onSubmit={onSubmit}
+            />
           </div>
-        )}
-        {pendingResult.isSuccess && (
-          <div className="mx-auto h-10 max-w-sm">
-            <Link to="/">
-              <Button
-                label="送出成功"
-                buttonColor={ThemeColor.Primary}
-                underline="no-underline"
-                className={`${ThemeColor.Primary_Pseudo} mb-10 text-sm`}
-              />
-            </Link>
-          </div>
-        )}
+        </div>
       </div>
     </>
   );

@@ -49,7 +49,7 @@ export default function ChangePassword(): JSX.Element {
     return dispatch({
       type: "PATCH",
       payload: {
-        url: `${baseUrl as string}/users/updatePassword`,
+        url: `${baseUrl}/users/updatePassword`,
         body: newPasswordInfo,
         token,
       },

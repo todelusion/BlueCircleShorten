@@ -20,20 +20,21 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl }: IApiReducer = useApi();
+  const { state, dispatch, baseUrl, token }: IApiReducer = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
   const navigate = useNavigate();
+  console.log(token);
 
   useEffect(() => {
     const checkHTTPmethods = async (): Promise<void> => {
       const value = await state;
       if (value.config.method === "patch") return undefined;
-      return handlePromiseResult({
-        state,
-        setPendingStatus,
-        navigate,
-        path: "/home",
-      }).catch((error) => error);
+      // return handlePromiseResult({
+      //   state,
+      //   setPendingStatus,
+      //   navigate,
+      //   path: "/home",
+      // }).catch((error) => error);
     };
     checkHTTPmethods().catch((err) => err);
 

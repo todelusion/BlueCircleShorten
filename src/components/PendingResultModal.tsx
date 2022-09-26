@@ -16,22 +16,25 @@ interface IPendingResultModal {
 export default function PendingResultModal({
   pendingResult,
 }: IPendingResultModal): JSX.Element {
-  const { resData } = useApi();
+  const { resData, baseUrl } = useApi();
   const showResultMessage = (): string => {
     if (resData === null || resData === undefined) return "";
-
-    if (
-      (resData as ErrorResponse).response !== undefined &&
-      (resData as ErrorResponse).response.status === 400
-    )
-      return (resData as ErrorResponse).response.data.message;
 
     if ((resData as ForgetPasswordResponse).message === "已寄出驗證信")
       return (resData as ErrorResponse).message.trim();
 
     if ((resData as TokenResponse).status === "success") return "成功";
 
-    return "發生技術錯誤";
+    if ((resData as ErrorResponse).response === undefined)
+      return "發生系統錯誤";
+
+    if (
+      (resData as ErrorResponse).response.config.url ===
+      `${baseUrl}/users/sign_in`
+    )
+      return "帳號尚未註冊";
+
+    return (resData as ErrorResponse).response.data.message;
   };
 
   return (

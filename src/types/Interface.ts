@@ -19,7 +19,20 @@ export interface Response {
   data: Data;
   status: number;
   statusText: string;
+  config: Config;
 }
 export interface Data {
   message: string;
+}
+export interface Config {
+  transformRequest: null[];
+  transformResponse: null[];
+  timeout: number;
+  xsrfCookieName: string;
+  xsrfHeaderName: string;
+  maxContentLength: number;
+  maxBodyLength: number;
+  method: string;
+  url: string;
+  data: string;
 }

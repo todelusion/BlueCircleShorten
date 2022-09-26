@@ -1,6 +1,11 @@
 {
-  "message": "Request failed with status code 400",
-  "name": "AxiosError",
+  "data": { "status": "error", "message": "系統錯誤，請恰系統管理員" },
+  "status": 500,
+  "statusText": "Internal Server Error",
+  "headers": {
+    "content-length": "67",
+    "content-type": "application/json; charset=utf-8"
+  },
   "config": {
     "transitional": {
       "silentJSONParsing": true,
@@ -21,8 +26,7 @@
     },
     "method": "post",
     "url": "https://fast-headland-09301.herokuapp.com/users/sign_in",
-    "data": "{\"email\":\"\",\"password\":\"\"}"
+    "data": "{\"email\":\"SADSADdF@gmail.com\",\"password\":\"afasd#Fsd\"}"
   },
-  "code": "ERR_BAD_REQUEST",
-  "status": 400
+  "request": {}
 }

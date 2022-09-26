@@ -6,12 +6,12 @@ import type { IApiReducer } from "../../context/ApiContext";
 import handlePromiseResult from "../../utils/handlePromiseResult";
 
 import useApi from "../../hooks/useApi";
-import usePendingResult from "../../hooks/usePendingResult";
+import usePendingStatus from "../../hooks/usePendingStatus";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
 import PendingResultModal from "../../components/PendingResultModal";
-import { RegExpEmail } from "../../utils/RegExp";
+import { RegExpEmail, RegExpPassword } from "../../utils/RegExp";
 
 const initialState = {
   email: "",
@@ -21,13 +21,16 @@ const initialState = {
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
-  const { pendingResult, handleResult } = usePendingResult();
+  const { pendingResult, setPendingStatus } = usePendingStatus();
   const navigate = useNavigate();
 
   useEffect(() => {
-    handlePromiseResult({ state, handleResult, navigate, path: "/home" }).catch(
-      (error) => error
-    );
+    handlePromiseResult({
+      state,
+      setPendingStatus,
+      navigate,
+      path: "/home",
+    }).catch((error) => error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
@@ -42,7 +45,12 @@ export default function Login(): JSX.Element {
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
     console.log(loginInfo);
-    handleResult(PendingType.isPending, true);
+    if (
+      loginInfo.email.match(RegExpEmail) === null ||
+      loginInfo.password.match(RegExpPassword) === null
+    )
+      return undefined;
+    setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },
@@ -72,6 +80,10 @@ export default function Login(): JSX.Element {
           className={`${ThemeColor.Slate_Pseudo} mb-14 lg:h-24`}
           label={{ name: "password", description: "密碼" }}
           handleChange={handleChange}
+          errorHint={{
+            status: loginInfo.password.match(RegExpPassword) === null,
+            message: "請輸入正確的密碼格式",
+          }}
         />
         <div className="mb-10 flex items-end justify-between">
           <Link

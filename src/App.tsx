@@ -19,7 +19,7 @@ export default function Router(): JSX.Element {
         <Route path="/findpassword" element={<FindPassword />} />
         <Route path="/findpassword/success" element={<FindPasswordSuccess />} />
         <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/changepassword/:id" element={<ChangePassword />} />
+        <Route path="/changepassword/:token" element={<ChangePassword />} />
       </Route>
       <Route path="/home" element={<Home />} />
     </Routes>

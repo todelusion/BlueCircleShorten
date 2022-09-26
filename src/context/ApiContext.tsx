@@ -10,7 +10,10 @@
 import { createContext, useEffect, useReducer, useState } from "react";
 import { ErrorResponse, TokenResponse } from "../types/Interface";
 import axiosGET from "../utils/axiosGET";
+import axiosPATCH from "../utils/axiosPATCH";
 import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
+
+const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
 interface Props {
   children: JSX.Element;
@@ -18,7 +21,7 @@ interface Props {
 export interface IApiReducer {
   state: Promise<any>;
   dispatch: React.Dispatch<AxiosType>;
-  baseUrl: string;
+  baseUrl: typeof baseUrl;
   token: string;
   resData: ErrorResponse | TokenResponse | null;
 }
@@ -26,9 +29,8 @@ export interface IApiReducer {
 type AxiosType =
   | { type: "GET"; payload: string }
   | { type: "POST"; payload: IAxiosPOST }
+  | { type: "PATCH"; payload: IAxiosPOST }
   | { type: "RESET" };
-
-const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
 const initialState = new Promise((resolve) => {
   resolve(undefined);
@@ -43,6 +45,8 @@ const axiosReducer = async (
       return axiosGET(action.payload);
     case "POST":
       return axiosPOST(action.payload);
+    case "PATCH":
+      return axiosPATCH(action.payload);
     case "RESET":
       return undefined;
     default:

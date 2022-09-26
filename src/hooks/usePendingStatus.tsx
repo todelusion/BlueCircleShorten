@@ -13,16 +13,16 @@ export interface PendingResult {
   isError: boolean;
 }
 
-interface IUsePendingResult {
-  handleResult: (pendingType: PendingType, boolean: boolean) => void;
+interface IUsePendingStatus {
+  setPendingStatus: (pendingType: PendingType, boolean: boolean) => void;
   pendingResult: PendingResult;
 }
 
-export default function usePendingResult(): IUsePendingResult {
+export default function usePendingStatus(): IUsePendingStatus {
   const [pendingResult, setPendingResult] = useState(initialState);
 
-  const handleResult = (pendingType: string, boolean: boolean): void => {
+  const setPendingStatus = (pendingType: string, boolean: boolean): void => {
     setPendingResult((prevState) => ({ ...prevState, [pendingType]: boolean }));
   };
-  return { pendingResult, handleResult };
+  return { pendingResult, setPendingStatus };
 }

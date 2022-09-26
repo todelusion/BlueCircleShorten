@@ -21,7 +21,7 @@ const usePOST = async ({
   const headers = new Headers(token);
   const axiosPOST = async (): Promise<Response | unknown> => {
     try {
-      const res = await axios.post(
+      const res = await axios.patch(
         url,
         body,
         headers.Authorization !== undefined ? (headers as object) : {}

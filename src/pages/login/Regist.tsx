@@ -5,7 +5,7 @@ import { ThemeColor, PendingType } from "../../types/Enum";
 import type { IApiReducer } from "../../context/ApiContext";
 
 import useApi from "../../hooks/useApi";
-import usePendingResult from "../../hooks/usePendingResult";
+import usePendingStatus from "../../hooks/usePendingStatus";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
@@ -27,12 +27,15 @@ export default function Login(): JSX.Element {
     useState<typeof initialState>(initialState);
   const { state, dispatch, baseUrl }: IApiReducer = useApi();
   const navigate = useNavigate();
-  const { pendingResult, handleResult } = usePendingResult();
+  const { pendingResult, setPendingStatus } = usePendingStatus();
 
   useEffect(() => {
-    handlePromiseResult({ state, handleResult, navigate, path: "/home" }).catch(
-      (error) => error
-    );
+    handlePromiseResult({
+      state,
+      setPendingStatus,
+      navigate,
+      path: "/home",
+    }).catch((error) => error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
@@ -48,7 +51,14 @@ export default function Login(): JSX.Element {
   const onSubmit = (): void => {
     console.log(RegistInfo);
     if (dispatch === undefined) return window.location.reload();
-    handleResult(PendingType.isPending, true);
+    if (
+      RegistInfo.email.match(RegExpEmail) === null ||
+      RegistInfo.name.length === 0 ||
+      RegistInfo.password.match(RegExpPassword) === null ||
+      RegistInfo.password !== RegistInfo.confirmPassword
+    )
+      return undefined;
+    setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },
@@ -64,7 +74,7 @@ export default function Login(): JSX.Element {
       >
         <PendingResultModal pendingResult={pendingResult} />
       </div>
-      <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:pt-16 lg:text-base">
+      <div className="max-h-screen w-full max-w-sm py-10 md:max-w-lg lg:py-8 lg:text-base">
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10 w-max font-serif text-lg font-black`}
           label={{ name: "註冊會員", description: "註冊會員" }}

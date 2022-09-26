@@ -23,7 +23,6 @@ export default function PendingResultModal({
       return "註冊成功";
 
     if (errorData === null || errorData === undefined) return "";
-
     if (String(errorData.response.status).startsWith("4"))
       return errorData.response.data.message;
 

@@ -44,9 +44,9 @@ type AxiosType =
   | { type: "RESET" };
 
 const axiosReducer = async (
-  state: Promise<PostPatchResponse | unknown | ErrorResponse>,
+  state: Promise<unknown>,
   action: AxiosType
-): Promise<PostPatchResponse | unknown | ErrorResponse> => {
+): Promise<unknown> => {
   switch (action.type) {
     case "GET":
       return axiosGET(action.payload);
@@ -94,6 +94,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
       } catch (error) {
         console.log(error);
         console.log(res);
+        // setErrorData(res)
         setErrorData(schemaError.parse(res));
       }
 

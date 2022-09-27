@@ -1,10 +1,10 @@
-/* 這裡做了兩件事
-1. 創建<contextComponent>
-2. 回傳用<contextComponent.Provider>包裹children的JSX.Element
+/* ApiContext.tsx功能
+  1. 創建<contextComponent>
+  2. 回傳用<contextComponent.Provider>包裹children的JSX.Element
 
-效益：
-1. 往後只要被ApiProvider包裹的JSX都將自動視為ApiProvider底下的children
-2. 可在這檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
+  效益：
+  1. 往後只要被ApiProvider包裹的JSX都將自動視為ApiProvider底下的children
+  2. 可在ApiContext.tsx檔案本身撰寫全域鉤子（例如useReducer）或其他邏輯
 */
 
 import { createContext, useEffect, useReducer, useState } from "react";
@@ -72,6 +72,10 @@ export const ApiContext = createContext({});
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
 
+  /* usePendingStatus()自製鉤子注意事項
+    1. 只能透過context傳到子層
+    2. 若在各自的子層引入則會被React視為各自的狀態管理，而非統一狀態管理
+  */
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
   const navigate = useNavigate();
@@ -89,7 +93,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
       try {
         const successResponse = schemaPOST.parse(res);
         setResData(successResponse);
-
         // Redirect and ShowModal management
         if (successResponse !== null && successResponse !== undefined) {
           if (

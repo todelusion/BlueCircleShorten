@@ -32,11 +32,11 @@ export default function Login(): JSX.Element {
 
   const onSubmit = (): void => {
     console.log(loginInfo);
-    // if (
-    //   loginInfo.email.match(RegExpEmail) === null ||
-    //   loginInfo.password.match(RegExpPassword) === null
-    // )
-    //   return undefined;
+    if (
+      loginInfo.email.match(RegExpEmail) === null ||
+      loginInfo.password.match(RegExpPassword) === null
+    )
+      return undefined;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",

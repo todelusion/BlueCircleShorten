@@ -38,50 +38,10 @@ const handleRedirectAndModal = (promiseResultConfig: ResponseResult): void => {
     String(errorData.response.status).startsWith("4") ||
     String(errorData.response.status).startsWith("5")
   ) {
-    console.log(errorData.response.status);
     setPendingStatus(PendingType.isError, true);
     setTimeout(() => {
       setPendingStatus(PendingType.isError, false);
     }, 1000);
   }
 };
-
-const manageRedirect = (promiseResultConfig: ResponseResult): void => {
-  const { setPendingStatus, resData, errorData, navigate, baseUrl, path } =
-    promiseResultConfig;
-  console.log(path);
-  if (resData !== undefined && baseUrl !== undefined) {
-    if (
-      resData.config.url === `${baseUrl}/users/sign_in` ||
-      resData.config.url === `${baseUrl}/users/sign_up`
-    )
-      handleRedirectAndModal({
-        setPendingStatus,
-        resData,
-        navigate,
-        path: "/home",
-      });
-
-    if (resData.config.url === `${baseUrl}/users/updatePassword`)
-      handleRedirectAndModal({
-        setPendingStatus,
-        resData,
-        navigate,
-        path: "/findpassword/success",
-      });
-    if (resData.config.url === `${baseUrl}/users/updatePassword`)
-      handleRedirectAndModal({
-        setPendingStatus,
-        resData,
-        navigate,
-        path: "/",
-      });
-  } else {
-    handleRedirectAndModal({
-      setPendingStatus,
-      errorData,
-    });
-  }
-};
-
 export default handleRedirectAndModal;

@@ -18,15 +18,8 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const {
-    dispatch,
-    baseUrl,
-    token,
-    pendingResult,
-    setPendingStatus,
-  }: IApiReducer = useApi();
-  // console.log("token", token);
-  console.log(pendingResult);
+  const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
+    useApi();
   if (dispatch === undefined) window.location.reload();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -39,12 +32,11 @@ export default function Login(): JSX.Element {
 
   const onSubmit = (): void => {
     console.log(loginInfo);
-
-    if (
-      loginInfo.email.match(RegExpEmail) === null ||
-      loginInfo.password.match(RegExpPassword) === null
-    )
-      return undefined;
+    // if (
+    //   loginInfo.email.match(RegExpEmail) === null ||
+    //   loginInfo.password.match(RegExpPassword) === null
+    // )
+    //   return undefined;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",

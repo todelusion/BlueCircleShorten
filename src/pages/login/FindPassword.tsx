@@ -7,7 +7,6 @@ import Button from "../../components/Button";
 
 import type { IApiReducer } from "../../context/ApiContext";
 
-import usePendingStatus from "../../hooks/usePendingStatus";
 import { RegExpEmail } from "../../utils/RegExp";
 import PendingResultModal from "../../components/PendingResultModal";
 
@@ -19,8 +18,8 @@ export default function FindPassword(): JSX.Element {
   const [findPasswordInfo, setFindPasswordInfo] =
     useState<typeof initialState>(initialState);
 
-  const { dispatch, baseUrl }: IApiReducer = useApi();
-  const { pendingResult, setPendingStatus } = usePendingStatus();
+  const { dispatch, baseUrl, setPendingStatus, pendingResult }: IApiReducer =
+    useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

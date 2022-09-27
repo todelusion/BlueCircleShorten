@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { PendingType, ThemeColor } from "../../types/Enum";
 
 import useApi from "../../hooks/useApi";
-import usePendingStatus from "../../hooks/usePendingStatus";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
@@ -21,8 +20,7 @@ export default function ChangePassword(): JSX.Element {
   const [newPasswordInfo, setNewPasswordInfo] = useState(initialState);
   const { token } = useParams();
 
-  const { dispatch, baseUrl } = useApi();
-  const { pendingResult, setPendingStatus } = usePendingStatus();
+  const { dispatch, baseUrl, setPendingStatus, pendingResult } = useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

@@ -71,8 +71,9 @@ export const ApiContext = createContext({});
 
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
+
   const { pendingResult, setPendingStatus } = usePendingStatus();
-  // console.log(pendingResult);
+
   const navigate = useNavigate();
 
   const [resData, setResData] = useState<PostPatchResponse | null>(null);
@@ -81,52 +82,13 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
   useEffect(() => {
-    // console.log(resData, errorData);
-    // const manageRedirect = async(): Promise<void> => {
-    //   if (resData !== null && resData !== undefined) {
-    //     if (
-    //       resData.config.url === `${baseUrl}/users/sign_in` ||
-    //       resData.config.url === `${baseUrl}/users/sign_up`
-    //     )
-    //       handleRedirectAndModal({
-    //         setPendingStatus,
-    //         resData,
-    //         navigate,
-    //         path: "/home",
-    //       });
-
-    //     if (resData.config.url === `${baseUrl}/users/updatePassword`)
-    //       handleRedirectAndModal({
-    //         setPendingStatus,
-    //         resData,
-    //         navigate,
-    //         path: "/findpassword/success",
-    //       });
-    //     if (resData.config.url === `${baseUrl}/users/updatePassword`)
-    //       handleRedirectAndModal({
-    //         setPendingStatus,
-    //         resData,
-    //         navigate,
-    //         path: "/",
-    //       });
-    //   } else if (errorData !== null && errorData !== undefined) {
-    //     handleRedirectAndModal({
-    //       setPendingStatus,
-    //       errorData,
-    //     });
-    //   }
-    // };
-
     const parsePromise = async (): Promise<void> => {
       const res = await state;
-      // console.log(pendingResult);
-      console.log(res);
       if (res === undefined || res === null) return;
 
       try {
         const successResponse = schemaPOST.parse(res);
         setResData(successResponse);
-        console.log(successResponse.config.url);
 
         // Redirect and ShowModal management
         if (successResponse !== null && successResponse !== undefined) {
@@ -161,7 +123,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         setToken(successResponse.data.user.token);
       } catch (error) {
         // console.log(error);
-        // setErrorData(res)
         const errorResponse = schemaError.parse(res);
         setErrorData(errorResponse);
         if (errorResponse !== null && errorResponse !== undefined) {
@@ -175,8 +136,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
     parsePromise().catch((error) => error);
   }, [state]);
-
-  // console.log(pendingResult);
 
   return (
     <ApiContext.Provider

@@ -5,7 +5,6 @@ import { ThemeColor, PendingType } from "../../types/Enum";
 import type { IApiReducer } from "../../context/ApiContext";
 
 import useApi from "../../hooks/useApi";
-import usePendingStatus from "../../hooks/usePendingStatus";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
@@ -24,8 +23,8 @@ export default function Login(): JSX.Element {
   // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
-  const { dispatch, baseUrl }: IApiReducer = useApi();
-  const { pendingResult, setPendingStatus } = usePendingStatus();
+  const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
+    useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

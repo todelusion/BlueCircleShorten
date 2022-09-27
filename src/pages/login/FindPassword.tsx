@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { PendingType, ThemeColor } from "../../types/Enum";
 import useApi from "../../hooks/useApi";
 import Form from "../../components/Form";
@@ -7,7 +7,6 @@ import Button from "../../components/Button";
 
 import type { IApiReducer } from "../../context/ApiContext";
 
-import handlePromiseResult from "../../utils/handlePromiseResult";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import { RegExpEmail } from "../../utils/RegExp";
 import PendingResultModal from "../../components/PendingResultModal";
@@ -20,18 +19,8 @@ export default function FindPassword(): JSX.Element {
   const [findPasswordInfo, setFindPasswordInfo] =
     useState<typeof initialState>(initialState);
 
-  const { state, dispatch, baseUrl }: IApiReducer = useApi();
+  const { dispatch, baseUrl }: IApiReducer = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    handlePromiseResult({
-      state,
-      setPendingStatus,
-      navigate,
-      path: "/findpassword/success",
-    }).catch((error) => error);
-  }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

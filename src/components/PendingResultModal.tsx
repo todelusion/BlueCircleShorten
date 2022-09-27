@@ -3,7 +3,6 @@ import successIcon from "../assets/successIcon.svg";
 
 import { PendingResult } from "../hooks/usePendingStatus";
 import useApi from "../hooks/useApi";
-import { ErrorResponse } from "../types/Schema";
 
 interface IPendingResultModal {
   pendingResult: PendingResult;

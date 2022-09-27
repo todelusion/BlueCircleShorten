@@ -8,10 +8,14 @@
 */
 
 import { createContext, useEffect, useReducer, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosGET from "../utils/axiosGET";
 import axiosPATCH from "../utils/axiosPATCH";
 import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
-import handlePromiseResult from "../utils/handlePromiseResult";
+import handleRedirectAndModal from "../utils/handleRedirectAndModal";
+import usePendingStatus, { PendingResult } from "../hooks/usePendingStatus";
+import { PendingType } from "../types/Enum";
+
 import {
   schemaPOST,
   schemaError,
@@ -35,6 +39,8 @@ export interface IApiReducer {
   token: string;
   resData: PostPatchResponse;
   errorData: ErrorResponse;
+  pendingResult: PendingResult;
+  setPendingStatus: (pendingType: PendingType, boolean: boolean) => void;
 }
 
 type AxiosType =
@@ -65,6 +71,9 @@ export const ApiContext = createContext({});
 
 export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [state, dispatch] = useReducer(axiosReducer, initialState);
+  const { pendingResult, setPendingStatus } = usePendingStatus();
+  // console.log(pendingResult);
+  const navigate = useNavigate();
 
   const [resData, setResData] = useState<PostPatchResponse | null>(null);
   const [errorData, setErrorData] = useState<ErrorResponse | null>(null);
@@ -72,48 +81,114 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
   useEffect(() => {
-    // const waitForEdit = ()=> {
-    //   if (value.config.method === "patch") return undefined;
-    //   return handlePromiseResult({
-    //     state,
-    //     setPendingStatus,
-    //     navigate,
-    //     path: "/home",
-    //   }).catch((error) => error);
-    // }
+    // console.log(resData, errorData);
+    // const manageRedirect = async(): Promise<void> => {
+    //   if (resData !== null && resData !== undefined) {
+    //     if (
+    //       resData.config.url === `${baseUrl}/users/sign_in` ||
+    //       resData.config.url === `${baseUrl}/users/sign_up`
+    //     )
+    //       handleRedirectAndModal({
+    //         setPendingStatus,
+    //         resData,
+    //         navigate,
+    //         path: "/home",
+    //       });
+
+    //     if (resData.config.url === `${baseUrl}/users/updatePassword`)
+    //       handleRedirectAndModal({
+    //         setPendingStatus,
+    //         resData,
+    //         navigate,
+    //         path: "/findpassword/success",
+    //       });
+    //     if (resData.config.url === `${baseUrl}/users/updatePassword`)
+    //       handleRedirectAndModal({
+    //         setPendingStatus,
+    //         resData,
+    //         navigate,
+    //         path: "/",
+    //       });
+    //   } else if (errorData !== null && errorData !== undefined) {
+    //     handleRedirectAndModal({
+    //       setPendingStatus,
+    //       errorData,
+    //     });
+    //   }
+    // };
 
     const parsePromise = async (): Promise<void> => {
       const res = await state;
+      // console.log(pendingResult);
+      console.log(res);
       if (res === undefined || res === null) return;
 
       try {
         const successResponse = schemaPOST.parse(res);
         setResData(successResponse);
+        console.log(successResponse.config.url);
+
+        if (successResponse !== null && successResponse !== undefined) {
+          if (
+            successResponse.config.url === `${baseUrl}/users/sign_in` ||
+            successResponse.config.url === `${baseUrl}/users/sign_up`
+          )
+            handleRedirectAndModal({
+              setPendingStatus,
+              resData: successResponse,
+              navigate,
+              path: "/home",
+            });
+
+          if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
+            handleRedirectAndModal({
+              setPendingStatus,
+              resData: successResponse,
+              navigate,
+              path: "/findpassword/success",
+            });
+          if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
+            handleRedirectAndModal({
+              setPendingStatus,
+              resData: successResponse,
+              navigate,
+              path: "/",
+            });
+        }
+
         if (successResponse.data.user === undefined) return;
         setToken(successResponse.data.user.token);
       } catch (error) {
-        console.log(error);
-        console.log(res);
+        // console.log(error);
         // setErrorData(res)
-        setErrorData(schemaError.parse(res));
+        const errorResponse = schemaError.parse(res);
+        setErrorData(errorResponse);
+        if (errorResponse !== null && errorResponse !== undefined) {
+          handleRedirectAndModal({
+            setPendingStatus,
+            errorData: errorResponse,
+          });
+        }
       }
-
-      // handlePromiseResult()
-
-      /* 待修正
-      1. 將handlePromiseResult改名為handleRedirectndModal
-      2. 將使用到的state改為傳入parsePromise底下的const res = await state
-      3. handlePromiseResult不為async function（因為透過傳入res參數就不需要async）
-
-      */
     };
 
     parsePromise().catch((error) => error);
   }, [state]);
 
+  // console.log(pendingResult);
+
   return (
     <ApiContext.Provider
-      value={{ state, dispatch, baseUrl, resData, errorData, token }}
+      value={{
+        state,
+        dispatch,
+        baseUrl,
+        resData,
+        errorData,
+        token,
+        pendingResult,
+        setPendingStatus,
+      }}
     >
       {children}
     </ApiContext.Provider>

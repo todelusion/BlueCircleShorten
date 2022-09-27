@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { ThemeColor, PendingType } from "../../types/Enum";
 
 import type { IApiReducer } from "../../context/ApiContext";
-import handlePromiseResult from "../../utils/handlePromiseResult";
 
 import useApi from "../../hooks/useApi";
-import usePendingStatus from "../../hooks/usePendingStatus";
 
 import Form from "../../components/Form";
 import Button from "../../components/Button";
@@ -20,26 +18,16 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl, token }: IApiReducer = useApi();
-  const { pendingResult, setPendingStatus } = usePendingStatus();
-  const navigate = useNavigate();
-  console.log("token", token);
-
-  // useEffect(() => {
-  //   const checkHTTPmethods = async (): Promise<void> => {
-  //     const value = await state;
-  //     if (value.config.method === "patch") return undefined;
-  //     return handlePromiseResult({
-  //       state,
-  //       setPendingStatus,
-  //       navigate,
-  //       path: "/home",
-  //     }).catch((error) => error);
-  //   };
-  //   checkHTTPmethods().catch((err) => err);
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [state]);
+  const {
+    dispatch,
+    baseUrl,
+    token,
+    pendingResult,
+    setPendingStatus,
+  }: IApiReducer = useApi();
+  // console.log("token", token);
+  console.log(pendingResult);
+  if (dispatch === undefined) window.location.reload();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -50,14 +38,14 @@ export default function Login(): JSX.Element {
   };
 
   const onSubmit = (): void => {
-    if (dispatch === undefined) return window.location.reload();
     console.log(loginInfo);
+
     if (
       loginInfo.email.match(RegExpEmail) === null ||
       loginInfo.password.match(RegExpPassword) === null
     )
-      // return undefined;
-      setPendingStatus(PendingType.isPending, true);
+      return undefined;
+    setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },

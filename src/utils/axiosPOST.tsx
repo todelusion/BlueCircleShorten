@@ -1,5 +1,4 @@
 import axios from "axios";
-import { z } from "zod";
 import Headers from "./Headers";
 import {
   schemaPOST,
@@ -32,8 +31,6 @@ const axiosPOST = async ({
     );
     return schemaPOST.parse(res);
   } catch (error) {
-    console.log(error);
-    console.log(JSON.stringify(error.response));
     return schemaError.parse(error);
   }
 };

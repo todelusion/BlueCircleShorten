@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
 
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 
-import handlePromiseResult from "../../utils/handlePromiseResult";
 import Form from "../../components/Form";
 import Button from "../../components/Button";
 import PendingResultModal from "../../components/PendingResultModal";
@@ -21,16 +20,9 @@ const initialState = {
 export default function ChangePassword(): JSX.Element {
   const [newPasswordInfo, setNewPasswordInfo] = useState(initialState);
   const { token } = useParams();
-  const navigate = useNavigate();
 
-  const { state, dispatch, baseUrl } = useApi();
+  const { dispatch, baseUrl } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
-
-  useEffect(() => {
-    handlePromiseResult({ state, setPendingStatus, navigate, path: "/" }).catch(
-      (err) => err
-    );
-  }, [state]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;

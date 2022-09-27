@@ -21,7 +21,8 @@ interface IUsePendingStatus {
 }
 
 export default function usePendingStatus(): IUsePendingStatus {
-  const [pendingResult, setPendingResult] = useState(initialState);
+  const [pendingResult, setPendingResult] =
+    useState<PendingResult>(initialState);
 
   const setPendingStatus = (pendingType: string, boolean: boolean): void => {
     setPendingResult((prevState) => ({ ...prevState, [pendingType]: boolean }));

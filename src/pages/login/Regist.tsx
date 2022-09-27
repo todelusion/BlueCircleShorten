@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { ThemeColor, PendingType } from "../../types/Enum";
 import type { IApiReducer } from "../../context/ApiContext";
@@ -12,7 +12,6 @@ import Button from "../../components/Button";
 import PendingResultModal from "../../components/PendingResultModal";
 
 import { RegExpEmail, RegExpPassword } from "../../utils/RegExp";
-import handlePromiseResult from "../../utils/handlePromiseResult";
 
 const initialState = {
   email: "",
@@ -25,21 +24,9 @@ export default function Login(): JSX.Element {
   // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
-  const { state, dispatch, baseUrl }: IApiReducer = useApi();
-  const navigate = useNavigate();
+  const { dispatch, baseUrl }: IApiReducer = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
-  // useEffect(() => {
-  //   handlePromiseResult({
-  //     state,
-  //     setPendingStatus,
-  //     navigate,
-  //     path: "/home",
-  //   }).catch((error) => error);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [state]);
-
-  // function expression
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setRegistInfo((prevState: typeof initialState) => ({
@@ -57,8 +44,8 @@ export default function Login(): JSX.Element {
       RegistInfo.password.match(RegExpPassword) === null ||
       RegistInfo.password !== RegistInfo.confirmPassword
     )
-      return undefined;
-    setPendingStatus(PendingType.isPending, true);
+      // return undefined;
+      setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },

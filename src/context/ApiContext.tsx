@@ -128,6 +128,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         setResData(successResponse);
         console.log(successResponse.config.url);
 
+        // Redirect and ShowModal management
         if (successResponse !== null && successResponse !== undefined) {
           if (
             successResponse.config.url === `${baseUrl}/users/sign_in` ||

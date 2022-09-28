@@ -15,6 +15,7 @@ interface FormPops {
     message: string;
   };
   showSearchIcon?: boolean;
+  showOutline?: boolean;
 }
 
 function Form({
@@ -25,10 +26,15 @@ function Form({
   errorHint,
   hideLabel,
   showSearchIcon,
+  showOutline,
 }: FormPops): JSX.Element {
   return (
     <div
-      className={`box-shadow lg-Pseudo slate-Pseudo flex flex-col justify-between border-2 border-black bg-white py-3 px-4 ${className}`}
+      className={`${
+        showOutline ?? false
+          ? "box-shadow lg-Pseudo border-2 border-black py-3 px-4"
+          : ""
+      } flex flex-col justify-between bg-white ${className}`}
     >
       <p className={hideLabel}>
         {label.description}
@@ -70,6 +76,7 @@ Form.defaultProps = {
   },
   hideLabel: "",
   showSearchIcon: false,
+  showOutline: true,
 };
 
 export default Form;

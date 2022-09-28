@@ -23,7 +23,7 @@ export default function Router(): JSX.Element {
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/changepassword/:token" element={<ChangePassword />} />
         <Route path="/home" element={<Home />}>
-          <Route path="index" element={<Shorten />} />
+          <Route index element={<Shorten />} />
         </Route>
       </Route>
     </Routes>

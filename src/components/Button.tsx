@@ -1,12 +1,12 @@
-import { ThemeColor } from "../types/Enum";
+import { ReactNode } from "react";
 
 export interface IButtonProps {
   onSubmit?: () => void;
   onReset?: () => void;
-  label: string;
-  buttonColor: ThemeColor;
+  label?: string | ReactNode;
+  buttonColor: string;
   className: string;
-  underline: string;
+  underline: "no-underline" | "underline";
 }
 
 export default function Button({

@@ -7,8 +7,10 @@ import Login from "./pages/login/Login";
 import Regist from "./pages/login/Regist";
 import FindPassword from "./pages/login/FindPassword";
 import ChangePassword from "./pages/login/ChangePassword";
-import Home from "./pages/home/Home";
 import FindPasswordSuccess from "./pages/login/FindPasswordSuccess";
+
+import Home from "./pages/home/Home";
+import Shorten from "./pages/home/Shorten";
 
 export default function Router(): JSX.Element {
   return (
@@ -20,8 +22,10 @@ export default function Router(): JSX.Element {
         <Route path="/findpassword/success" element={<FindPasswordSuccess />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/changepassword/:token" element={<ChangePassword />} />
+        <Route path="/home" element={<Home />}>
+          <Route path="index" element={<Shorten />} />
+        </Route>
       </Route>
-      <Route path="/home" element={<Home />} />
     </Routes>
   );
 }

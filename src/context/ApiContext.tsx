@@ -54,6 +54,7 @@ const axiosReducer = async (
   action: AxiosType
 ): Promise<unknown> => {
   switch (action.type) {
+    // 將case拆細一點比較好
     case "GET":
       return axiosGET(action.payload);
     case "POST":
@@ -81,10 +82,15 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
   const navigate = useNavigate();
 
   const [resData, setResData] = useState<PostPatchResponse | null>(null);
+
   const [errorData, setErrorData] = useState<ErrorResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  console.log(resData);
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
+  // state: axios回傳的promise物件
+  // resposne: resData, errorData, token: promise物件視情況解析後的資料
+  // state與response拆開是因為，需要在useEffect的裡面setResData才能更新resData狀態
   useEffect(() => {
     const parsePromise = async (): Promise<void> => {
       const res = await state;
@@ -123,6 +129,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         }
 
         if (successResponse.data.user === undefined) return;
+
         setToken(successResponse.data.user.token);
       } catch (error) {
         // console.log(error);

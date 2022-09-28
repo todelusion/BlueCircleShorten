@@ -22,16 +22,19 @@ const axiosPOST = async ({
   url,
   body,
   token,
-}: IAxiosPOST): Promise<PostPatchResponse | ErrorResponse> => {
+}: IAxiosPOST): Promise<unknown> => {
   try {
     const res = await axios.post(
       url,
       body,
       token !== undefined ? new Headers(token) : {}
     );
-    return schemaPOST.parse(res);
+    if (res.data.user.token !== undefined) {
+      sessionStorage.setItem("token", res.data.user.token);
+    }
+    return res;
   } catch (error) {
-    return schemaError.parse(error);
+    return error;
   }
 };
 

@@ -84,7 +84,9 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
   const [resData, setResData] = useState<PostPatchResponse | null>(null);
 
   const [errorData, setErrorData] = useState<ErrorResponse | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+
+  const token = sessionStorage.getItem("token");
+  // const [token, setToken] = useState<string | null>(null);
   console.log(resData);
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect

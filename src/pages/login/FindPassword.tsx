@@ -5,8 +5,6 @@ import useApi from "../../hooks/useApi";
 import Form from "../../components/Form";
 import Button from "../../components/Button";
 
-import type { IApiReducer } from "../../context/ApiContext";
-
 import { RegExpEmail } from "../../utils/RegExp";
 import PendingResultModal from "../../components/PendingResultModal";
 
@@ -18,8 +16,7 @@ export default function FindPassword(): JSX.Element {
   const [findPasswordInfo, setFindPasswordInfo] =
     useState<typeof initialState>(initialState);
 
-  const { dispatch, baseUrl, setPendingStatus, pendingResult }: IApiReducer =
-    useApi();
+  const { dispatch, baseUrl, setPendingStatus, pendingResult } = useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -35,7 +32,7 @@ export default function FindPassword(): JSX.Element {
     if (findPasswordInfo.email.match(RegExpEmail) === null) return undefined;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({
-      type: "POST",
+      type: "POST no Fetch",
       payload: { url: `${baseUrl}/users/forget`, body: findPasswordInfo },
     });
   };

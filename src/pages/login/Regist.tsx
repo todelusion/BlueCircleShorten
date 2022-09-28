@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { ThemeColor, PendingType } from "../../types/Enum";
-import type { IApiReducer } from "../../context/ApiContext";
 
 import useApi from "../../hooks/useApi";
 
@@ -23,8 +22,7 @@ export default function Login(): JSX.Element {
   // react hooks
   const [RegistInfo, setRegistInfo] =
     useState<typeof initialState>(initialState);
-  const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
-    useApi();
+  const { dispatch, baseUrl, pendingResult, setPendingStatus } = useApi();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -46,7 +44,7 @@ export default function Login(): JSX.Element {
       // return undefined;
       setPendingStatus(PendingType.isPending, true);
     return dispatch({
-      type: "POST",
+      type: "POST no Fetch",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },
     });
   };

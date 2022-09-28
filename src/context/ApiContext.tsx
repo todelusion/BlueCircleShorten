@@ -9,18 +9,24 @@
 
 import { createContext, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosGET from "../utils/axiosGET";
+import axiosGET, { IAxiosGET } from "../utils/axiosGET";
 import axiosPATCH from "../utils/axiosPATCH";
 import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
 import handleRedirectAndModal from "../utils/handleRedirectAndModal";
+import axiosPOSTandGET, {
+  IaxiosPOSTandGET,
+  IUrlPosts,
+} from "../utils/axiosPOSTandGET";
 import usePendingStatus, { PendingResult } from "../hooks/usePendingStatus";
 import { PendingType } from "../types/Enum";
 
 import {
-  schemaPOST,
+  schemaSuccess,
   schemaError,
-  PostPatchResponse,
+  schemaUrlList,
+  SuccessResponse,
   ErrorResponse,
+  UrlListResponse,
 } from "../types/Schema";
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
@@ -33,19 +39,20 @@ interface Props {
   children: JSX.Element;
 }
 export interface IApiReducer {
-  state: Promise<any>;
+  listData: UrlListResponse;
   dispatch: React.Dispatch<AxiosType>;
   baseUrl: typeof baseUrl;
   token: string;
-  resData: PostPatchResponse;
+  resData: SuccessResponse;
   errorData: ErrorResponse;
   pendingResult: PendingResult;
   setPendingStatus: (pendingType: PendingType, boolean: boolean) => void;
 }
 
 type AxiosType =
-  | { type: "GET"; payload: string }
-  | { type: "POST"; payload: IAxiosPOST }
+  | { type: "GET"; payload: IAxiosGET }
+  | { type: "POST no Fetch"; payload: IAxiosPOST }
+  | { type: "POST and Fetch"; payload: IaxiosPOSTandGET }
   | { type: "PATCH"; payload: IAxiosPOST }
   | { type: "RESET" };
 
@@ -57,7 +64,9 @@ const axiosReducer = async (
     // 將case拆細一點比較好
     case "GET":
       return axiosGET(action.payload);
-    case "POST":
+    case "POST and Fetch":
+      return axiosPOSTandGET(action.payload);
+    case "POST no Fetch":
       return axiosPOST(action.payload);
     case "PATCH":
       return axiosPATCH(action.payload);
@@ -81,11 +90,19 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
   const navigate = useNavigate();
 
-  const [resData, setResData] = useState<PostPatchResponse | null>(null);
+  const [resData, setResData] = useState<SuccessResponse | null>(null);
+
+  const [listData, setListData] = useState<UrlListResponse | null>(null);
+  console.log(listData);
 
   const [errorData, setErrorData] = useState<ErrorResponse | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  console.log(resData);
+
+  // 只要是客戶端渲染網頁，每當頁面重新整理時都會丟失狀態，包括contex，因此建議存在sessionStorage後再設定toekn狀態
+  // const [token, setToken] = useState<string | null>(null);
+  const token = sessionStorage.getItem("token");
+
+  // console.log(resData);
+  //
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
   // state: axios回傳的promise物件
@@ -94,43 +111,59 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
   useEffect(() => {
     const parsePromise = async (): Promise<void> => {
       const res = await state;
+      console.log(res);
       if (res === undefined || res === null) return;
 
       try {
-        const successResponse = schemaPOST.parse(res);
+        const successResponse = schemaSuccess.parse(res);
         setResData(successResponse);
+        console.log(successResponse);
+
         // Redirect and ShowModal management
         if (successResponse !== null && successResponse !== undefined) {
+          const { url, method } = successResponse.config;
           if (
-            successResponse.config.url === `${baseUrl}/users/sign_in` ||
-            successResponse.config.url === `${baseUrl}/users/sign_up`
+            url === `${baseUrl}/users/sign_in` ||
+            url === `${baseUrl}/users/sign_up`
           )
             handleRedirectAndModal({
               setPendingStatus,
-              resData: successResponse,
+              successResponse,
               navigate,
               path: "/home",
             });
 
-          if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
+          if (url === `${baseUrl}/url/list` && method === "get") {
+            console.log(url, method);
+            console.log();
+            try {
+              setListData(schemaUrlList.parse(successResponse.data));
+            } catch (error) {
+              console.log(error);
+            }
             handleRedirectAndModal({
               setPendingStatus,
-              resData: successResponse,
+              successResponse,
+              navigate,
+              path: "/home",
+            });
+          }
+
+          if (url === `${baseUrl}/users/updatePassword`)
+            handleRedirectAndModal({
+              setPendingStatus,
+              successResponse,
               navigate,
               path: "/findpassword/success",
             });
-          if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
+          if (url === `${baseUrl}/users/updatePassword`)
             handleRedirectAndModal({
               setPendingStatus,
-              resData: successResponse,
+              successResponse,
               navigate,
               path: "/",
             });
         }
-
-        if (successResponse.data.user === undefined) return;
-
-        setToken(successResponse.data.user.token);
       } catch (error) {
         // console.log(error);
         const errorResponse = schemaError.parse(res);
@@ -150,7 +183,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
   return (
     <ApiContext.Provider
       value={{
-        state,
+        listData,
         dispatch,
         baseUrl,
         resData,

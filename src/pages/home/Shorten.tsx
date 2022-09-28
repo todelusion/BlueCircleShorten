@@ -1,8 +1,15 @@
-import React from "react";
-import Form from "../../components/Form";
+import React, { useEffect } from "react";
+import useApi from "../../hooks/useApi";
 import { ThemeColor } from "../../types/Enum";
 
 const Shorten = (): JSX.Element => {
+  const { dispatch, token, baseUrl } = useApi();
+  if (dispatch === undefined) window.location.reload();
+  useEffect(() => {
+    dispatch({ type: "GET", payload: { url: `${baseUrl}/url/list/`, token } });
+  }, []);
+  console.log(token);
+
   console.log("this is shorten pages");
   return (
     <div className="flex h-screen w-full justify-center pt-56 xl:justify-between">
@@ -10,48 +17,6 @@ const Shorten = (): JSX.Element => {
         <li className="w-full max-w-lg">
           <div
             className={`lg-Pseudo box-shadow h-60 border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li className="w-full max-w-lg">
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li className="w-full max-w-lg">
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li className="w-full max-w-lg">
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li>
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li>
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-          >
-            Shorten is right here
-          </div>
-        </li>
-        <li>
-          <div
-            className={`lg-Pseudo box-shadow h-60 w-full max-w-lg border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
           >
             Shorten is right here
           </div>

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeColor, PendingType } from "../../types/Enum";
 
-import type { IApiReducer } from "../../context/ApiContext";
-
 import useApi from "../../hooks/useApi";
 
 import Form from "../../components/Form";
@@ -18,7 +16,7 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
+  const { dispatch, baseUrl, pendingResult, setPendingStatus, token } =
     useApi();
   if (dispatch === undefined) window.location.reload();
 
@@ -39,8 +37,13 @@ export default function Login(): JSX.Element {
       return undefined;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({
-      type: "POST",
-      payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },
+      type: "POST and Fetch",
+      payload: {
+        postUrl: `${baseUrl}/users/sign_in`,
+        getUrl: `${baseUrl}/url/list`,
+        body: loginInfo,
+        token,
+      },
     });
   };
 

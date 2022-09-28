@@ -2,11 +2,11 @@
 
 import { NavigateFunction } from "react-router-dom";
 import { PendingType } from "../types/Enum";
-import { ErrorResponse, PostPatchResponse } from "../types/Schema";
+import { ErrorResponse, SuccessResponse } from "../types/Schema";
 
 interface ResponseResult {
   setPendingStatus: (pendingType: PendingType, boolean: boolean) => void;
-  resData?: PostPatchResponse;
+  successResponse?: SuccessResponse;
   errorData?: ErrorResponse;
   navigate?: NavigateFunction;
   baseUrl?: string;
@@ -14,19 +14,19 @@ interface ResponseResult {
 }
 
 const handleRedirectAndModal = (promiseResultConfig: ResponseResult): void => {
-  const { setPendingStatus, resData, errorData, navigate, path } =
+  const { setPendingStatus, successResponse, errorData, navigate, path } =
     promiseResultConfig;
-
+  console.log(successResponse);
   setPendingStatus(PendingType.isPending, false);
 
-  if (resData !== undefined && resData.status === 200) {
+  if (successResponse !== undefined && successResponse.status === 200) {
     setPendingStatus(PendingType.isSuccess, true);
     setTimeout(() => {
       setPendingStatus(PendingType.isSuccess, false);
     }, 1000);
 
     if (navigate !== undefined && path !== undefined) {
-      // if(resData.config.url === `${baseUrl}/users/updatePassword`){
+      // if(successResponse.config.url === `${baseUrl}/users/updatePassword`){
       navigate(path);
     }
     return;

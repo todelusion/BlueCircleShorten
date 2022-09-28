@@ -1,9 +1,9 @@
 import axios from "axios";
 import Headers from "./Headers";
 import {
-  schemaPOST,
+  schemaSuccess,
   schemaError,
-  PostPatchResponse,
+  SuccessResponse,
   ErrorResponse,
 } from "../types/Schema";
 
@@ -22,14 +22,15 @@ const axiosPOST = async ({
   url,
   body,
   token,
-}: IAxiosPOST): Promise<PostPatchResponse | ErrorResponse> => {
+}: IAxiosPOST): Promise<SuccessResponse | ErrorResponse> => {
   try {
     const res = await axios.post(
       url,
       body,
       token !== undefined ? new Headers(token) : {}
     );
-    return schemaPOST.parse(res);
+    sessionStorage.setItem("token", res.data.user.token);
+    return schemaSuccess.parse(res);
   } catch (error) {
     return schemaError.parse(error);
   }

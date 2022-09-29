@@ -22,6 +22,19 @@
   }
 }
 
+/* .urlList > input[type=button] {
+  overflow: hidden;
+  word-break: break-all
+  
+} */
+/* .i-trash {
+  display: none;
+}
+
+li:hover .i-trash {
+  display: block;
+} */
+
 .show {
   visibility: visible;
   opacity: 1;

@@ -2,6 +2,7 @@ import React from "react";
 import { iconSearchPath } from "../assets/icon";
 
 interface FormPops {
+  onSubmit?: () => void;
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;
   label: {
@@ -23,6 +24,7 @@ function Form({
   label,
   input,
   handleChange,
+  onSubmit,
   errorHint,
   hideLabel,
   showSearchIcon,
@@ -70,6 +72,7 @@ function Form({
 Form.defaultProps = {
   input: "block",
   handleChange: undefined,
+  onSubmit: undefined,
   errorHint: {
     status: false,
     message: "",

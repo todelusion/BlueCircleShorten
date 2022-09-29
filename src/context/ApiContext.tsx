@@ -24,7 +24,7 @@ import {
 } from "../types/Schema";
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
-const baseShorten = "https://bluecircle.chudaobao.com";
+const baseShorten = "https://bc.chudaobao.com";
 
 const initialState = new Promise<void>((resolve) => {
   resolve();
@@ -36,8 +36,8 @@ interface Props {
 export interface IApiReducer {
   state: Promise<any>;
   dispatch: React.Dispatch<AxiosType>;
-  baseUrl: "https://fast-headland-09301.herokuapp.com";
-  baseShorten: "https://bluecircle.chudaobao.com/";
+  baseUrl: typeof baseUrl;
+  baseShorten: typeof baseShorten;
   token: string;
   resData: PostPatchResponse;
   errorData: ErrorResponse;

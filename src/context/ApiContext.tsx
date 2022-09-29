@@ -9,7 +9,7 @@
 
 import { createContext, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosGET from "../utils/axiosGET";
+import axiosGET, { IAxiosGET } from "../utils/axiosGET";
 import axiosPATCH from "../utils/axiosPATCH";
 import axiosPOST, { IAxiosPOST } from "../utils/axiosPOST";
 import handleRedirectAndModal from "../utils/handleRedirectAndModal";
@@ -24,6 +24,7 @@ import {
 } from "../types/Schema";
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
+const baseShorten = "https://bluecircle.chudaobao.com";
 
 const initialState = new Promise<void>((resolve) => {
   resolve();
@@ -35,7 +36,8 @@ interface Props {
 export interface IApiReducer {
   state: Promise<any>;
   dispatch: React.Dispatch<AxiosType>;
-  baseUrl: typeof baseUrl;
+  baseUrl: "https://fast-headland-09301.herokuapp.com";
+  baseShorten: "https://bluecircle.chudaobao.com/";
   token: string;
   resData: PostPatchResponse;
   errorData: ErrorResponse;
@@ -44,7 +46,7 @@ export interface IApiReducer {
 }
 
 type AxiosType =
-  | { type: "GET"; payload: string }
+  | { type: "GET"; payload: IAxiosGET }
   | { type: "POST"; payload: IAxiosPOST }
   | { type: "PATCH"; payload: IAxiosPOST }
   | { type: "RESET" };
@@ -131,8 +133,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         }
 
         if (successResponse.data.user === undefined) return;
-
-        setToken(successResponse.data.user.token);
       } catch (error) {
         // console.log(error);
         const errorResponse = schemaError.parse(res);
@@ -155,6 +155,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         state,
         dispatch,
         baseUrl,
+        baseShorten,
         resData,
         errorData,
         token,

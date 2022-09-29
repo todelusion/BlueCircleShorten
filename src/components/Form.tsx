@@ -9,7 +9,7 @@ interface FormPops {
     description: string;
   };
   hideLabel?: "hidden";
-  input?: "hidden";
+  input?: "hidden" | string;
   errorHint?: {
     status: boolean;
     message: string;
@@ -52,7 +52,7 @@ function Form({
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="flex">
         <input
-          className={`w-full border-b-2 border-black outline-none ${
+          className={`w-full border-b-2 border-black outline-none  ${
             input as string
           }`}
           name={label.name}

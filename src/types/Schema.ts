@@ -80,6 +80,28 @@ export const schemaError = z.object({
   }),
 });
 
+export const schemaUrlLists = z.object({
+  status: z.string(),
+  urlList: z.array(
+    z.object({
+      _id: z.string(),
+      url: z.string(),
+      shortUrl: z.string(),
+      userId: z.string(),
+      title: z.string(),
+      description: z.string(),
+      photo: z.string(),
+      tag: z.array(z.unknown()),
+      urlId: z.string(),
+      repeatTimes: z.number(),
+      notRepeatTimes: z.number(),
+      __v: z.number(),
+    })
+  ),
+});
+
+export type UrlLists = z.infer<typeof schemaUrlLists>;
+
 export type PostPatchResponse = z.infer<typeof schemaPOST>;
 
 export type ErrorResponse = z.infer<typeof schemaError>;

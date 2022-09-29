@@ -29,7 +29,7 @@ export default function PendingResultModal({
             <img src={successIcon} alt="success" />
           </div>
           <p className="text-center font-serif text-2xl font-black text-primary">
-            成功
+            {pendingResult.message}
           </p>
         </li>
 
@@ -42,7 +42,7 @@ export default function PendingResultModal({
             <img src={errorIcon} alt="error" />
           </div>
           <p className="text-center font-serif text-2xl font-black text-primary">
-            系統錯誤請再試一次
+            {pendingResult.message}
           </p>
         </li>
       </ul>

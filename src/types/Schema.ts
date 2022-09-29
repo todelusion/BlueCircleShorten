@@ -100,6 +100,8 @@ export const schemaUrlLists = z.object({
   ),
 });
 
+export const schemaUrl = z.string().url();
+
 export type UrlLists = z.infer<typeof schemaUrlLists>;
 
 export type PostPatchResponse = z.infer<typeof schemaPOST>;

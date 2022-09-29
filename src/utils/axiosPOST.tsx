@@ -1,11 +1,7 @@
 import axios from "axios";
 import Headers from "./Headers";
-import {
-  schemaPOST,
-  schemaError,
-  PostPatchResponse,
-  ErrorResponse,
-} from "../types/Schema";
+
+const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
 export interface IAxiosPOST {
   url: string;
@@ -14,6 +10,7 @@ export interface IAxiosPOST {
     name?: string;
     password?: string;
     confirmPassword?: string;
+    url?: string;
   };
   token?: string;
 }
@@ -29,11 +26,18 @@ const axiosPOST = async ({
       body,
       token !== undefined ? new Headers(token) : {}
     );
-    if (res.data.user.token !== undefined) {
+    console.log(res);
+
+    if (
+      res.config.url === `${baseUrl}/users/sign_in` ||
+      res.config.url === `${baseUrl}/users/sign_up`
+    ) {
       sessionStorage.setItem("token", res.data.user.token);
     }
+    console.log(res);
     return res;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import Headers from "./Headers";
 
 export interface IAxiosGET {
@@ -8,7 +8,12 @@ export interface IAxiosGET {
 
 const axiosGET = async ({ url, token }: IAxiosGET): Promise<AxiosResponse> => {
   const headers = token !== undefined ? new Headers(token) : {};
-  const res = await axios.get(url, headers);
-  return res;
+  try {
+    const res = await axios.get(url, headers);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 export default axiosGET;

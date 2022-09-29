@@ -3,6 +3,7 @@ import React, {
   ReactNode,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import {
@@ -14,7 +15,7 @@ import {
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
-import { UrlLists, schemaUrlLists } from "../../types/Schema";
+import { UrlLists, schemaUrlLists, schemaUrl } from "../../types/Schema";
 
 import { iconAddPath } from "../../assets/icon";
 import Button from "../../components/Button";
@@ -22,6 +23,9 @@ import axiosGET from "../../utils/axiosGET";
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import StatusModal from "../../components/StatusModal";
+import { z } from "zod";
+import axiosPOST from "../../utils/axiosPOST";
+import { AxiosError } from "axios";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -32,7 +36,12 @@ interface HomeContext {
   urlLists: UrlLists | null;
 }
 
-const initialState = {
+const initialCountsOfPages = {
+  amountOfPages: [1],
+  currentPage: 1,
+};
+
+const initialUrlInfo = {
   url: "",
   title: "",
   photo: "",
@@ -43,40 +52,30 @@ const Home = (): JSX.Element => {
   const { baseUrl, token } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
   // const [urlLists, dispatch] = useReducer(urlListsReducer, []);
-
-  const [countsOfPages, setCountsOfPages] = useState<number[]>([]);
+  const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
-  const [urlInfo, setUrlInfo] = useState(initialState);
+  const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
 
-  // const query = useParams();
-  // console.log(query);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    setUrlInfo((prevState: typeof initialState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  // console.log(urlInfo);
-  const fetchData = async (): Promise<void> => {
+  const fetchData = async (pageNum?: number): Promise<void> => {
+    console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
     try {
-      // 取得全部頁面數
+      // 取得全部頁面數//
       const AllListsRes = await axiosGET({ url: `${baseUrl}/url/list`, token });
       const numOfPages = Math.ceil(
         (AllListsRes.data.urlList as any[]).length / 4
       );
-      const arr = [];
+      const arr: number[] = [];
       for (let i = 1; i <= numOfPages; i += 1) {
         arr.push(i);
       }
-      setCountsOfPages(arr);
+      setCountsOfPages((prevState) => ({ ...prevState, amountOfPages: arr }));
 
-      // 透過qeury params取得單一列表資訊
+      // 透過qeury params取得單一列表資訊//
       const res = await axiosGET({
-        url: `${baseUrl}/url?page=1&limit=4&sort=asc`,
+        url: `${baseUrl}/url?page=${
+          pageNum === undefined ? "1" : pageNum
+        }&limit=4&sort=asc`,
         token,
       });
       setPendingStatus(PendingType.isPending, false);
@@ -90,6 +89,55 @@ const Home = (): JSX.Element => {
       }, 1000);
     }
   };
+
+  // const query = useParams();
+  // console.log(query);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setUrlInfo((prevState: typeof initialUrlInfo) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const onSubmit = async (): Promise<void> => {
+    const { url } = urlInfo;
+    try {
+      schemaUrl.parse(url);
+    } catch (error) {
+      setPendingStatus(PendingType.isError, true, "url格式錯誤");
+      setTimeout(() => {
+        setPendingStatus(PendingType.isError, false);
+      }, 1000);
+      return;
+    }
+
+    setPendingStatus(PendingType.isPending, true);
+    const errorRes = await axiosPOST({
+      url: `${baseUrl}/url`,
+      body: { url },
+      token,
+    });
+    setPendingStatus(PendingType.isPending, false);
+    if ((errorRes as AxiosError).response?.status === 400) {
+      setPendingStatus(PendingType.isError, true, "重複的網址");
+      setTimeout(() => {
+        setPendingStatus(PendingType.isError, false);
+      }, 1000);
+      return;
+    }
+
+    await fetchData(countsOfPages.currentPage).catch((error) =>
+      console.log(error)
+    );
+    setPendingStatus(PendingType.isSuccess, true, "添加成功！");
+    setTimeout(() => {
+      setPendingStatus(PendingType.isSuccess, false);
+    }, 1000);
+  };
+
+  // console.log(urlInfo);
 
   useEffect(() => {
     fetchData().catch((error) => {
@@ -123,6 +171,7 @@ const Home = (): JSX.Element => {
             buttonColor={`${ThemeColor.Black} rounded-full`}
             underline="no-underline"
             className={`${ThemeColor.Primary_Pseudo} ml-11 h-14 max-w-[70px] rounded-full after:rounded-full`}
+            onSubmit={onSubmit}
           />
         </li>
         <li className="ml-5 flex">
@@ -135,13 +184,17 @@ const Home = (): JSX.Element => {
             input="bg-[#F5F5F5]"
           />
           <div className="ml-10 md:ml-20">
-            {countsOfPages.map((num) => (
+            {countsOfPages.amountOfPages.map((num, index) => (
               <input
                 key={num}
                 type="button"
                 value={num}
                 onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                   const clickNum = (e.target as HTMLInputElement).value;
+                  setCountsOfPages((prevState) => ({
+                    ...prevState,
+                    currentPage: Number(clickNum),
+                  }));
                   setPendingStatus(PendingType.isPending, true);
 
                   axiosGET({
@@ -156,7 +209,9 @@ const Home = (): JSX.Element => {
                       throw error;
                     });
                 }}
-                className="cursor-pointer px-3 underline"
+                className={`${
+                  countsOfPages.currentPage === index + 1 ? "bg-third" : ""
+                } cursor-pointer rounded-xl px-3 underline duration-150`}
               />
             ))}
           </div>

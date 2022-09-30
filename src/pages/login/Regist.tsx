@@ -43,8 +43,8 @@ export default function Login(): JSX.Element {
       RegistInfo.password.match(RegExpPassword) === null ||
       RegistInfo.password !== RegistInfo.confirmPassword
     )
-      // return undefined;
-      setPendingStatus(PendingType.isPending, true);
+      return undefined;
+    setPendingStatus(PendingType.isPending, true);
     return dispatch({
       type: "POST",
       payload: { url: `${baseUrl}/users/sign_up`, body: RegistInfo },

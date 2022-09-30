@@ -99,21 +99,33 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
     const parsePromise = async (): Promise<void> => {
       const res = await state;
       if (res === undefined || res === null) return;
+      console.log(res);
 
       try {
         const successResponse = schemaPOST.parse(res);
         setResData(successResponse);
         // Redirect and ShowModal management
+
         if (successResponse !== null && successResponse !== undefined) {
+          console.log(successResponse);
           if (
             successResponse.config.url === `${baseUrl}/users/sign_in` ||
             successResponse.config.url === `${baseUrl}/users/sign_up`
-          )
+          ) {
             handleRedirectAndModal({
               setPendingStatus,
               resData: successResponse,
               navigate,
               path: "/home",
+            });
+          }
+
+          if (successResponse.config.url === `${baseUrl}/users/forget`)
+            handleRedirectAndModal({
+              setPendingStatus,
+              resData: successResponse,
+              navigate,
+              path: "/",
             });
 
           if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
@@ -123,6 +135,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
               navigate,
               path: "/findpassword/success",
             });
+
           if (successResponse.config.url === `${baseUrl}/users/updatePassword`)
             handleRedirectAndModal({
               setPendingStatus,

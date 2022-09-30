@@ -19,16 +19,19 @@ const handleRedirectAndModal = (promiseResultConfig: ResponseResult): void => {
 
   setPendingStatus(PendingType.isPending, false);
 
-  if (resData !== undefined && resData.status === 200) {
+  if (resData !== undefined) {
     setPendingStatus(PendingType.isSuccess, true);
     setTimeout(() => {
       setPendingStatus(PendingType.isSuccess, false);
     }, 1000);
-
-    if (navigate !== undefined && path !== undefined) {
-      // if(resData.config.url === `${baseUrl}/users/updatePassword`){
-      navigate(path);
+    if (resData.status === 200 || resData.status === 201) {
+      if (navigate !== undefined && path !== undefined) {
+        // if(resData.config.url === `${baseUrl}/users/updatePassword`){
+        console.log(path);
+        navigate(path);
+      }
     }
+
     return;
   }
 

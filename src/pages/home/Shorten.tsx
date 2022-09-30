@@ -24,13 +24,7 @@ const Shorten = (): JSX.Element => {
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
-    <motion.div
-      // initial={{ opacity: 0 }}
-      // animate={{ opacity: 1 }}
-      // exit={{ opacity: 0 }}
-      // key="shortenPages"
-      className="absolute top-52 mb-10 flex w-full justify-center px-10"
-    >
+    <div className="absolute top-52 mb-10 flex w-full justify-center px-10">
       <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
         {urlLists.urlList.map((urlList) => (
           <li
@@ -120,7 +114,7 @@ const Shorten = (): JSX.Element => {
           />
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 };
 

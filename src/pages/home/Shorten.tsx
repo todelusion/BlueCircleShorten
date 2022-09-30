@@ -13,7 +13,7 @@ import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
 
 interface ShortenContext {
-  toggleEdit: (urlID: string) => void;
+  toggleEdit: (urlID?: string) => void;
 }
 
 const Shorten = (): JSX.Element => {
@@ -30,7 +30,7 @@ const Shorten = (): JSX.Element => {
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
-    <div className="absolute top-52 mb-10 flex w-full justify-center px-10 xl:justify-between">
+    <div className="absolute top-52 mb-10 flex w-full justify-center px-10">
       <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
         {urlLists.urlList.map((urlList) => (
           <li

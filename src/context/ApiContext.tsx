@@ -89,7 +89,7 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
   const token = sessionStorage.getItem("token");
   // const [token, setToken] = useState<string | null>(null);
-  console.log(resData);
+  // console.log(resData);
 
   // 每當state發生變化（或在記憶體的位置發生變化）就觸發useEffect
   // state: axios回傳的promise物件

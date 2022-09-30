@@ -1,18 +1,6 @@
-import React, {
-  ChangeEvent,
-  ReactNode,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
-import {
-  Outlet,
-  useOutletContext,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { AxiosError } from "axios";
+import React, { ReactNode, useEffect, useState } from "react";
+import { Outlet, useOutletContext } from "react-router-dom";
+import { AxiosError, AxiosResponse } from "axios";
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -24,8 +12,8 @@ import axiosGET from "../../utils/axiosGET";
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import StatusModal from "../../components/StatusModal";
-import { z } from "zod";
 import axiosPOST from "../../utils/axiosPOST";
+import axiosDELETE from "../../utils/axiosDELETE";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -84,7 +72,7 @@ const Home = (): JSX.Element => {
       setUrlLists(schemaUrlLists.parse(res.data));
     } catch (error) {
       setPendingStatus(PendingType.isPending, false);
-      setPendingStatus(PendingType.isError, true);
+      setPendingStatus(PendingType.isError, true, "系統錯誤請重新整理");
       setTimeout(() => {
         setPendingStatus(PendingType.isError, false);
       }, 1000);
@@ -139,9 +127,19 @@ const Home = (): JSX.Element => {
     setUrlInfo((prevSate) => ({ ...prevSate, url: "" }));
   };
 
-  const onDelete = async (urlID: string): Promise<void> => {};
-
-  // console.log(urlInfo);
+  const onDelete = async (urlID: string): Promise<void> => {
+    try {
+      setPendingStatus(PendingType.isPending, true);
+      await axiosDELETE({ url: `${baseUrl}/url/${urlID}`, token });
+    } catch (error) {
+      console.log(error);
+    }
+    try {
+      await fetchData(countsOfPages.currentPage);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchData().catch((error) => {
@@ -190,36 +188,48 @@ const Home = (): JSX.Element => {
             input="bg-[#F5F5F5]"
           />
           <div className="ml-10 md:ml-20">
-            {countsOfPages.amountOfPages.map((num, index) => (
-              <input
-                key={num}
-                type="button"
-                value={num}
-                onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                  const clickNum = (e.target as HTMLInputElement).value;
-                  setCountsOfPages((prevState) => ({
-                    ...prevState,
-                    currentPage: Number(clickNum),
-                  }));
-                  setPendingStatus(PendingType.isPending, true);
+            {countsOfPages.amountOfPages.map((num, index, array) => {
+              console.log(countsOfPages.currentPage);
+              console.log(array);
 
-                  axiosGET({
-                    url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
-                    token,
-                  })
-                    .then((res) => {
-                      setPendingStatus(PendingType.isPending, false);
-                      setUrlLists(schemaUrlLists.parse(res.data));
+              // 每5個為一組，計算5個裡面的順位
+              return (
+                <input
+                  key={num}
+                  type="button"
+                  value={num}
+                  onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                    const clickNum = (e.target as HTMLInputElement).value;
+
+                    setCountsOfPages((prevState) => ({
+                      ...prevState,
+                      currentPage: Number(clickNum),
+                    }));
+                    setPendingStatus(PendingType.isPending, true);
+
+                    axiosGET({
+                      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
+                      token,
                     })
-                    .catch((error) => {
-                      throw error;
-                    });
-                }}
-                className={`${
-                  countsOfPages.currentPage === index + 1 ? "bg-third" : ""
-                } cursor-pointer rounded-xl px-3 underline duration-150`}
-              />
-            ))}
+                      .then((res) => {
+                        setPendingStatus(PendingType.isPending, false);
+                        setUrlLists(schemaUrlLists.parse(res.data));
+                      })
+                      .catch((error) => {
+                        throw error;
+                      });
+                  }}
+                  className={`${
+                    countsOfPages.currentPage === index + 1 ? "bg-third" : ""
+                  } ${
+                    index >= countsOfPages.currentPage - 3 &&
+                    index < countsOfPages.currentPage + 2
+                      ? ""
+                      : "hidden"
+                  } cursor-pointer rounded-xl px-3 underline duration-150`}
+                />
+              );
+            })}
           </div>
         </li>
       </ul>

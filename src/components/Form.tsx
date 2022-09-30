@@ -77,7 +77,12 @@ function Form({
           }}
         />
         {showSearchIcon === true && (
-          <img src={iconSearchPath} alt="seatch" width="20" />
+          <img
+            src={iconSearchPath}
+            alt="search"
+            width="20"
+            className="bg-second"
+          />
         )}
       </label>
     </div>

@@ -1,37 +1,36 @@
-import {
-  Outlet,
-  useOutletContext,
-  useNavigate,
-  useParams,
-  useSearchParams,
-  useLocation,
-} from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { ThemeColor } from "../../types/Enum";
+
 import { useHome } from "./Home";
+import Edit from "./Edit";
 
 import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
-import RouteAnimated from "../../components/RouteAnimated";
 
-interface ShortenContext {
-  toggleEdit: (urlID?: string) => void;
+export interface InitialEditModal {
+  showEditModal: boolean;
+  urlID: string;
 }
 
 const Shorten = (): JSX.Element => {
+  const [toggleEditModal, setToggleEditModal] = useState<InitialEditModal>({
+    showEditModal: false,
+    urlID: "",
+  });
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
-  const navigate = useNavigate();
-  const currentRoute = useLocation();
-
-  const toggleEdit = (urlID: string): void => {
-    if (currentRoute.pathname === "/home")
-      return navigate(`/home/edit/${urlID}`);
-    return navigate("/home");
-  };
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
-    <div className="absolute top-52 mb-10 flex w-full justify-center px-10">
+    <motion.div
+      // initial={{ opacity: 0 }}
+      // animate={{ opacity: 1 }}
+      // exit={{ opacity: 0 }}
+      // key="shortenPages"
+      className="absolute top-52 mb-10 flex w-full justify-center px-10"
+    >
       <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
         {urlLists.urlList.map((urlList) => (
           <li
@@ -77,7 +76,15 @@ const Shorten = (): JSX.Element => {
                 <button type="button">
                   <img src={iconChartPath} alt="chart" className="w-8" />
                 </button>
-                <button type="button" onClick={() => toggleEdit(urlList.urlId)}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setToggleEditModal({
+                      showEditModal: true,
+                      urlID: urlList.urlId,
+                    })
+                  }
+                >
                   <img src={iconEditPath} alt="edit" className="w-8" />
                 </button>
                 <input
@@ -104,15 +111,17 @@ const Shorten = (): JSX.Element => {
           </li>
         ))}
       </ul>
-      <RouteAnimated>
-        <Outlet context={{ toggleEdit }} />
-      </RouteAnimated>
-    </div>
+      <AnimatePresence>
+        {toggleEditModal.showEditModal && (
+          <Edit
+            urlID={toggleEditModal.urlID}
+            setToggleEditModal={setToggleEditModal}
+            key="EditModal"
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
 export default Shorten;
-
-export function useShortenPages(): ShortenContext {
-  return useOutletContext<ShortenContext>();
-}

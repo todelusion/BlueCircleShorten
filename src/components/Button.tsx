@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 export interface IButtonProps {
-  onSubmit?: () => void;
+  onSubmit?: () => void | Promise<void>;
   onReset?: () => void;
   label?: string | ReactNode;
   buttonColor: string;
@@ -21,7 +21,7 @@ export default function Button({
     <div className={`h-full w-full ${className} box-shadow sm-Pseudo bg-white`}>
       <button
         onClick={() => {
-          if (onSubmit !== undefined) onSubmit();
+          if (onSubmit !== undefined) void onSubmit();
           if (onReset !== undefined) onReset();
         }}
         type="button"

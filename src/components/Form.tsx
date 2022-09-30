@@ -1,8 +1,9 @@
 import React from "react";
 import { iconSearchPath } from "../assets/icon";
+import type { initialUrlInfo } from "../pages/home/Home";
 
 interface FormPops {
-  onSubmit?: () => void;
+  onSubmit?: () => void | Promise<void>;
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;
   label: {
@@ -17,6 +18,7 @@ interface FormPops {
   };
   showSearchIcon?: boolean;
   showOutline?: boolean;
+  urlInfo?: typeof initialUrlInfo;
 }
 
 function Form({
@@ -29,7 +31,12 @@ function Form({
   hideLabel,
   showSearchIcon,
   showOutline,
+  urlInfo,
 }: FormPops): JSX.Element {
+  const checkUrlInfo = (): string | undefined => {
+    if (urlInfo !== undefined) return urlInfo.url;
+    return undefined;
+  };
   return (
     <div
       className={`${
@@ -58,6 +65,13 @@ function Form({
             input as string
           }`}
           name={label.name}
+          value={checkUrlInfo()}
+          onKeyUp={(e): void => {
+            if (e.key === "Enter" && onSubmit !== undefined)
+              (onSubmit() as Promise<void>).catch((error) =>
+                console.log(error)
+              );
+          }}
           onChange={(e) => {
             if (handleChange !== undefined) handleChange(e);
           }}
@@ -80,6 +94,7 @@ Form.defaultProps = {
   hideLabel: "",
   showSearchIcon: false,
   showOutline: true,
+  urlInfo: {},
 };
 
 export default Form;

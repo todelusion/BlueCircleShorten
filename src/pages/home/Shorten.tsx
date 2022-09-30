@@ -6,14 +6,18 @@ import useApi from "../../hooks/useApi";
 
 const Shorten = (): JSX.Element => {
   const { baseShorten } = useApi();
-  const { urlLists } = useHome();
+  const { urlLists, onDelete } = useHome();
   if (urlLists === null || urlLists === undefined) return <></>;
 
   return (
     <div className="absolute top-52 mb-10 flex w-full justify-center px-10 xl:justify-between">
       <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
         {urlLists.urlList.map((urlList) => (
-          <li key={urlList.urlId} className="w-full max-w-lg">
+          <li
+            key={urlList.urlId}
+            id={urlList.urlId}
+            className="w-full max-w-lg"
+          >
             <div
               className={`lg-Pseudo box-shadow flex h-60 flex-col justify-between border-2 bg-white py-3 px-4 ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
             >
@@ -26,11 +30,20 @@ const Shorten = (): JSX.Element => {
                     {`#${tag as string}`}
                   </button>
                 ))}
-                <img
-                  src={iconTrashPath}
-                  alt="delete"
-                  className="i-trash absolute top-0 right-0 cursor-pointer"
-                />
+                <button
+                  type="button"
+                  onClick={(): void => {
+                    onDelete(urlList.urlId).catch((error) =>
+                      console.log(error)
+                    );
+                  }}
+                >
+                  <img
+                    src={iconTrashPath}
+                    alt="delete"
+                    className="i-trash absolute top-0 right-0 cursor-pointer"
+                  />
+                </button>
               </div>
               <div className="urlList grid max-w-xs grid-cols-3 items-center justify-items-start gap-y-1">
                 <p className="w-max text-center leading-6">
@@ -69,6 +82,7 @@ const Shorten = (): JSX.Element => {
       <div
         className={`lg-Pseudo box-shadow hidden h-60 w-1/3 border-2 bg-white xl:block ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
       >
+        {" "}
         <p className="font-dela text-4xl">預留位</p>
       </div>
     </div>

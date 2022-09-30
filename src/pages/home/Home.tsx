@@ -12,6 +12,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { AxiosError } from "axios";
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -25,7 +26,6 @@ import usePendingStatus from "../../hooks/usePendingStatus";
 import StatusModal from "../../components/StatusModal";
 import { z } from "zod";
 import axiosPOST from "../../utils/axiosPOST";
-import { AxiosError } from "axios";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -34,6 +34,7 @@ import { AxiosError } from "axios";
 // }
 interface HomeContext {
   urlLists: UrlLists | null;
+  onDelete: (urlID: string) => Promise<void>;
 }
 
 const initialCountsOfPages = {
@@ -41,7 +42,7 @@ const initialCountsOfPages = {
   currentPage: 1,
 };
 
-const initialUrlInfo = {
+export const initialUrlInfo = {
   url: "",
   title: "",
   photo: "",
@@ -135,7 +136,10 @@ const Home = (): JSX.Element => {
     setTimeout(() => {
       setPendingStatus(PendingType.isSuccess, false);
     }, 1000);
+    setUrlInfo((prevSate) => ({ ...prevSate, url: "" }));
   };
+
+  const onDelete = async (urlID: string): Promise<void> => {};
 
   // console.log(urlInfo);
 
@@ -161,6 +165,8 @@ const Home = (): JSX.Element => {
             label={{ name: "url", description: "TEST" }}
             hideLabel="hidden"
             handleChange={handleChange}
+            onSubmit={onSubmit}
+            urlInfo={urlInfo}
           />
           <Button
             label={
@@ -218,7 +224,7 @@ const Home = (): JSX.Element => {
         </li>
       </ul>
 
-      <Outlet context={{ urlLists }} />
+      <Outlet context={{ urlLists, onDelete }} />
     </>
   );
 };

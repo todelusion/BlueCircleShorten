@@ -17,14 +17,19 @@ const initialState = {
 };
 
 export default function Login(): JSX.Element {
+
+
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
+
+
   const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
     useApi();
   if (dispatch === undefined) window.location.reload();
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
-    setLoginInfo((prevState: typeof initialState) => ({
+    setLoginInfo((prevState) => ({
       ...prevState,
       [name]: value,
     }));

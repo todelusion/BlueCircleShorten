@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import Headers from "./Headers";
 
 export interface IAxiosDELETE {

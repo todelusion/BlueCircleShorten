@@ -188,56 +188,49 @@ const Home = (): JSX.Element => {
             input="bg-[#F5F5F5]"
           />
           <div className="ml-10 md:ml-20">
-            {countsOfPages.amountOfPages.map((num, index, array) => {
-              console.log(countsOfPages.currentPage);
-              console.log(array);
+            {countsOfPages.amountOfPages.map((num, index) => (
+              <React.Fragment key={num}>
+                <span>
+                  {index === countsOfPages.currentPage - 3 ? "..." : ""}
+                </span>
+                <input
+                  type="button"
+                  value={num}
+                  onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                    const clickNum = (e.target as HTMLInputElement).value;
 
-              // 每5個為一組，計算5個裡面的順位
-              return (
-                <>
-                  <span>
-                    {index === countsOfPages.currentPage - 3 ? "..." : ""}
-                  </span>
-                  <input
-                    key={num}
-                    type="button"
-                    value={num}
-                    onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                      const clickNum = (e.target as HTMLInputElement).value;
+                    setCountsOfPages((prevState) => ({
+                      ...prevState,
+                      currentPage: Number(clickNum),
+                    }));
+                    setPendingStatus(PendingType.isPending, true);
 
-                      setCountsOfPages((prevState) => ({
-                        ...prevState,
-                        currentPage: Number(clickNum),
-                      }));
-                      setPendingStatus(PendingType.isPending, true);
-
-                      axiosGET({
-                        url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
-                        token,
+                    axiosGET({
+                      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
+                      token,
+                    })
+                      .then((res) => {
+                        setPendingStatus(PendingType.isPending, false);
+                        setUrlLists(schemaUrlLists.parse(res.data));
                       })
-                        .then((res) => {
-                          setPendingStatus(PendingType.isPending, false);
-                          setUrlLists(schemaUrlLists.parse(res.data));
-                        })
-                        .catch((error) => {
-                          throw error;
-                        });
-                    }}
-                    className={`${
-                      countsOfPages.currentPage === index + 1 ? "bg-third" : ""
-                    }${
-                      index >= countsOfPages.currentPage - 3 &&
-                      index < countsOfPages.currentPage + 2
-                        ? ""
-                        : "hidden"
-                    } relative cursor-pointer rounded-xl px-3 underline`}
-                  />
-                  <span>
-                    {index === countsOfPages.currentPage + 1 ? "..." : ""}
-                  </span>
-                </>
-              );
-            })}
+                      .catch((error) => {
+                        throw error;
+                      });
+                  }}
+                  className={`${
+                    countsOfPages.currentPage === index + 1 ? "bg-third" : ""
+                  }${
+                    index >= countsOfPages.currentPage - 3 &&
+                    index < countsOfPages.currentPage + 2
+                      ? ""
+                      : "hidden"
+                  } relative cursor-pointer rounded-xl px-3 underline`}
+                />
+                <span>
+                  {index === countsOfPages.currentPage + 1 ? "..." : ""}
+                </span>
+              </React.Fragment>
+            ))}
           </div>
         </li>
       </ul>

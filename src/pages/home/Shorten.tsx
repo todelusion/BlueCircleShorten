@@ -1,14 +1,34 @@
+import {
+  Outlet,
+  useOutletContext,
+  useNavigate,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { ThemeColor } from "../../types/Enum";
 import { useHome } from "./Home";
 
 import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
 
+interface ShortenContext {
+  toggleEdit: (urlID: string) => void;
+}
+
 const Shorten = (): JSX.Element => {
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
-  if (urlLists === null || urlLists === undefined) return <></>;
+  const navigate = useNavigate();
+  const currentRoute = useLocation();
 
+  const toggleEdit = (urlID: string): void => {
+    if (currentRoute.pathname === "/home")
+      return navigate(`/home/edit/${urlID}`);
+    return navigate("/home");
+  };
+
+  if (urlLists === null || urlLists === undefined) return <></>;
   return (
     <div className="absolute top-52 mb-10 flex w-full justify-center px-10 xl:justify-between">
       <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
@@ -45,7 +65,7 @@ const Shorten = (): JSX.Element => {
                   />
                 </button>
               </div>
-              <div className="urlList grid max-w-xs grid-cols-3 items-center justify-items-start gap-y-1">
+              <div className="urlList grid max-w-xs grid-cols-3 items-center justify-items-start gap-x-3 gap-y-1">
                 <p className="w-max text-center leading-6">
                   <span className="text-[56px] font-bold">
                     {urlList.notRepeatTimes}
@@ -53,8 +73,12 @@ const Shorten = (): JSX.Element => {
                   <br />
                   點擊次數
                 </p>
-                <img src={iconChartPath} alt="chart" className="w-10" />
-                <img src={iconEditPath} alt="edit" className="w-10" />
+                <button type="button">
+                  <img src={iconChartPath} alt="chart" className="w-8" />
+                </button>
+                <button type="button" onClick={() => toggleEdit(urlList.urlId)}>
+                  <img src={iconEditPath} alt="edit" className="w-8" />
+                </button>
                 <input
                   type="button"
                   onClick={(e: React.MouseEvent<HTMLElement>) => {
@@ -79,14 +103,13 @@ const Shorten = (): JSX.Element => {
           </li>
         ))}
       </ul>
-      <div
-        className={`lg-Pseudo box-shadow hidden h-60 w-1/3 border-2 bg-white xl:block ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
-      >
-        {" "}
-        <p className="font-dela text-4xl">預留位</p>
-      </div>
+      <Outlet context={{ toggleEdit }} />
     </div>
   );
 };
 
 export default Shorten;
+
+export function useShortenPages(): ShortenContext {
+  return useOutletContext<ShortenContext>();
+}

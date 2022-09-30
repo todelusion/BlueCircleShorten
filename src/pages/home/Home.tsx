@@ -194,40 +194,48 @@ const Home = (): JSX.Element => {
 
               // 每5個為一組，計算5個裡面的順位
               return (
-                <input
-                  key={num}
-                  type="button"
-                  value={num}
-                  onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                    const clickNum = (e.target as HTMLInputElement).value;
+                <>
+                  <span>
+                    {index === countsOfPages.currentPage - 3 ? "..." : ""}
+                  </span>
+                  <input
+                    key={num}
+                    type="button"
+                    value={num}
+                    onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                      const clickNum = (e.target as HTMLInputElement).value;
 
-                    setCountsOfPages((prevState) => ({
-                      ...prevState,
-                      currentPage: Number(clickNum),
-                    }));
-                    setPendingStatus(PendingType.isPending, true);
+                      setCountsOfPages((prevState) => ({
+                        ...prevState,
+                        currentPage: Number(clickNum),
+                      }));
+                      setPendingStatus(PendingType.isPending, true);
 
-                    axiosGET({
-                      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
-                      token,
-                    })
-                      .then((res) => {
-                        setPendingStatus(PendingType.isPending, false);
-                        setUrlLists(schemaUrlLists.parse(res.data));
+                      axiosGET({
+                        url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
+                        token,
                       })
-                      .catch((error) => {
-                        throw error;
-                      });
-                  }}
-                  className={`${
-                    countsOfPages.currentPage === index + 1 ? "bg-third" : ""
-                  } ${
-                    index >= countsOfPages.currentPage - 3 &&
-                    index < countsOfPages.currentPage + 2
-                      ? ""
-                      : "hidden"
-                  } cursor-pointer rounded-xl px-3 underline duration-150`}
-                />
+                        .then((res) => {
+                          setPendingStatus(PendingType.isPending, false);
+                          setUrlLists(schemaUrlLists.parse(res.data));
+                        })
+                        .catch((error) => {
+                          throw error;
+                        });
+                    }}
+                    className={`${
+                      countsOfPages.currentPage === index + 1 ? "bg-third" : ""
+                    }${
+                      index >= countsOfPages.currentPage - 3 &&
+                      index < countsOfPages.currentPage + 2
+                        ? ""
+                        : "hidden"
+                    } relative cursor-pointer rounded-xl px-3 underline`}
+                  />
+                  <span>
+                    {index === countsOfPages.currentPage + 1 ? "..." : ""}
+                  </span>
+                </>
               );
             })}
           </div>

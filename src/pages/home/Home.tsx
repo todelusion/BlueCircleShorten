@@ -141,6 +141,28 @@ const Home = (): JSX.Element => {
     }
   };
 
+  const onSwitchPage = (e: React.MouseEvent): void => {
+    const clickNum = (e.target as HTMLInputElement | HTMLButtonElement).value;
+
+    setCountsOfPages((prevState) => ({
+      ...prevState,
+      currentPage: Number(clickNum),
+    }));
+    setPendingStatus(PendingType.isPending, true);
+
+    axiosGET({
+      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
+      token,
+    })
+      .then((res) => {
+        setPendingStatus(PendingType.isPending, false);
+        setUrlLists(schemaUrlLists.parse(res.data));
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
+
   useEffect(() => {
     fetchData().catch((error) => {
       throw error;
@@ -150,9 +172,9 @@ const Home = (): JSX.Element => {
   return (
     <>
       <div
-        className={
+        className={`${
           Object.values(pendingResult).includes(true) ? "show" : "close"
-        }
+        } z-10`}
       >
         <StatusModal pendingResult={pendingResult} />
       </div>
@@ -188,35 +210,23 @@ const Home = (): JSX.Element => {
             input="bg-[#F5F5F5]"
           />
           <div className="ml-10 md:ml-20">
-            {countsOfPages.amountOfPages.map((num, index) => (
+            {countsOfPages.amountOfPages.map((num, index, array) => (
               <React.Fragment key={num}>
-                <span>
-                  {index === countsOfPages.currentPage - 3 ? "..." : ""}
-                </span>
+                {index === countsOfPages.currentPage - 3 ? (
+                  <button
+                    type="button"
+                    value="1"
+                    onClick={(e) => onSwitchPage(e)}
+                  >
+                    ...
+                  </button>
+                ) : (
+                  ""
+                )}
                 <input
                   type="button"
                   value={num}
-                  onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                    const clickNum = (e.target as HTMLInputElement).value;
-
-                    setCountsOfPages((prevState) => ({
-                      ...prevState,
-                      currentPage: Number(clickNum),
-                    }));
-                    setPendingStatus(PendingType.isPending, true);
-
-                    axiosGET({
-                      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
-                      token,
-                    })
-                      .then((res) => {
-                        setPendingStatus(PendingType.isPending, false);
-                        setUrlLists(schemaUrlLists.parse(res.data));
-                      })
-                      .catch((error) => {
-                        throw error;
-                      });
-                  }}
+                  onClick={(e) => onSwitchPage(e)}
                   className={`${
                     countsOfPages.currentPage === index + 1 ? "bg-third" : ""
                   }${
@@ -227,7 +237,17 @@ const Home = (): JSX.Element => {
                   } relative cursor-pointer rounded-xl px-3 underline`}
                 />
                 <span>
-                  {index === countsOfPages.currentPage + 1 ? "..." : ""}
+                  {index === countsOfPages.currentPage + 1 ? (
+                    <button
+                      type="button"
+                      value={array.length}
+                      onClick={(e) => onSwitchPage(e)}
+                    >
+                      ...
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </span>
               </React.Fragment>
             ))}

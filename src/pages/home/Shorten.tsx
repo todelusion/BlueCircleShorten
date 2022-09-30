@@ -11,6 +11,7 @@ import { useHome } from "./Home";
 
 import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
+import RouteAnimated from "../../components/RouteAnimated";
 
 interface ShortenContext {
   toggleEdit: (urlID?: string) => void;
@@ -103,7 +104,9 @@ const Shorten = (): JSX.Element => {
           </li>
         ))}
       </ul>
-      <Outlet context={{ toggleEdit }} />
+      <RouteAnimated>
+        <Outlet context={{ toggleEdit }} />
+      </RouteAnimated>
     </div>
   );
 };

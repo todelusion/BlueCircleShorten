@@ -23,13 +23,14 @@ interface IEditProps {
 
 const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
   // const [editInfo, setEditInfo] = useState(initialEditInfo)
+  const { pendingResult, setPendingStatus } = usePendingStatus();
   const [tages, setTages] = useState<string[]>([]);
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
     photo: "",
   });
-  const { pendingResult, setPendingStatus } = usePendingStatus();
+  console.log(editForm);
 
   useEffect(() => {
     setTages(
@@ -72,7 +73,7 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
         >
           X
         </button>
-        <form className="grid w-full gap-y-7 px-12 py-14">
+        <form className="grid w-full gap-y-7 px-6 py-10 xs:py-14 xs:px-12">
           {/* 這裡記得需下判斷更改前與更改後的內容若相同則不發出 */}
           <div>
             <p>
@@ -151,11 +152,11 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
             <div className="flex flex-wrap">
               {tages.map((tag, index) => (
                 <button
-                  // eslint-disable-next-line react/no-array-index-key
                   type="button"
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   onClick={() => deleteTags(tag)}
-                  className="tag relative m-1 rounded-md border-2 border-black bg-third px-3 hover:line-through"
+                  className="relative m-1 rounded-md border-2 border-black bg-third px-3 py-1 text-xs hover:line-through"
                 >
                   {tag}
                 </button>
@@ -164,7 +165,7 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
           </div>
           <Button
             label="新增縮圖"
-            className={`${ThemeColor.Third_Pseudo} z-10 h-14 max-w-[100px] rounded-full after:rounded-full`}
+            className={`${ThemeColor.Third_Pseudo} z-10 mb-10 h-14 max-w-[100px] rounded-full after:rounded-full`}
             buttonColor={`${ThemeColor.Black} rounded-full text-sm`}
             underline="no-underline"
           />

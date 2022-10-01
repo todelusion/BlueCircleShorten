@@ -20,18 +20,20 @@ const Edit = ({ urlID, setToggleModal }: IEditProps): JSX.Element => {
   const { pendingResult, setPendingStatus } = usePendingStatus();
   const location = useLocation();
 
-  const fetchSingleData = async (): Promise<void> => {
-    if (urlID === undefined || urlID === "") return;
+  console.log(urlID);
 
-    setPendingStatus(PendingType.isPending, true);
-    const res = await axiosGET({ url: `${baseUrl}/url/${urlID}`, token });
-    setPendingStatus(PendingType.isPending, false);
-    console.log(res);
-  };
+  //   const fetchSingleData = async (): Promise<void> => {
+  //     if (urlID === undefined || urlID === "") return;
 
-  useEffect(() => {
-    fetchSingleData().catch((error) => console.log(error));
-  }, []);
+  //     setPendingStatus(PendingType.isPending, true);
+  //     const res = await axiosGET({ url: `${baseUrl}/url/${urlID}`, token });
+  //     setPendingStatus(PendingType.isPending, false);
+  //     console.log(res);
+  //   };
+
+  //   useEffect(() => {
+  //     fetchSingleData().catch((error) => console.log(error));
+  //   }, []);
 
   return (
     <motion.div
@@ -50,7 +52,7 @@ const Edit = ({ urlID, setToggleModal }: IEditProps): JSX.Element => {
           onClick={() => {
             setToggleModal((prevState) => ({
               ...prevState,
-              showEditModal: false,
+              showChartModal: false,
               urlID: "",
             }));
           }}

@@ -8,15 +8,18 @@ import Edit from "./Edit";
 
 import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
+import Chart from "./Chart";
 
-export interface InitialEditModal {
+export interface InitialToggleModal {
   showEditModal: boolean;
+  showChartModal: boolean;
   urlID: string;
 }
 
 const Shorten = (): JSX.Element => {
-  const [toggleEditModal, setToggleEditModal] = useState<InitialEditModal>({
+  const [toggleModal, setToggleModal] = useState<InitialToggleModal>({
     showEditModal: false,
+    showChartModal: false,
     urlID: "",
   });
   const { baseShorten } = useApi();
@@ -67,16 +70,26 @@ const Shorten = (): JSX.Element => {
                   <br />
                   點擊次數
                 </p>
-                <button type="button">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setToggleModal((prevState) => ({
+                      ...prevState,
+                      showChartModal: true,
+                      urlID: urlList.urlId,
+                    }))
+                  }
+                >
                   <img src={iconChartPath} alt="chart" className="w-8" />
                 </button>
                 <button
                   type="button"
                   onClick={() =>
-                    setToggleEditModal({
+                    setToggleModal((prevState) => ({
+                      ...prevState,
                       showEditModal: true,
                       urlID: urlList.urlId,
-                    })
+                    }))
                   }
                 >
                   <img src={iconEditPath} alt="edit" className="w-8" />
@@ -106,11 +119,18 @@ const Shorten = (): JSX.Element => {
         ))}
       </ul>
       <AnimatePresence>
-        {toggleEditModal.showEditModal && (
+        {toggleModal.showEditModal && (
           <Edit
-            urlID={toggleEditModal.urlID}
-            setToggleEditModal={setToggleEditModal}
+            urlID={toggleModal.urlID}
+            setToggleModal={setToggleModal}
             key="EditModal"
+          />
+        )}
+        {toggleModal.showChartModal && (
+          <Chart
+            urlID={toggleModal.urlID}
+            setToggleModal={setToggleModal}
+            key="ChartModal"
           />
         )}
       </AnimatePresence>

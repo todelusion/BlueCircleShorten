@@ -37,16 +37,24 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (formRef.current === null || e.target.files === null) return;
     const file = Array.from(e.target.files);
+    if (file[0].size > 1048576) {
+      setPendingStatus(PendingType.isError, true, "檔案不得超過1mb");
+      setTimeout(() => {
+        setPendingStatus(PendingType.isError, false);
+      }, 1000);
+      return;
+    }
+
     const formData = new FormData(
       formRef !== null ? formRef.current : undefined
     );
     formData.append("photo", file[0]);
 
-    // axiosPOST({
-    //   url: `${baseUrl}/upload/url_img`,
-    //   formData,
-    //   token,
-    // }).catch((error) => console.log(error));
+    axiosPOST({
+      url: `${baseUrl}/upload/url_img`,
+      formData,
+      token,
+    }).catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -182,6 +190,8 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
           </div>
           <form ref={formRef}>
             <input
+              type="file"
+              accept="image/*"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 handleFile(e);
               }}
@@ -196,8 +206,6 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
                 file:border-2
                 file:border-black
                 file:p-4 file:text-xs hover:file:bg-third"
-              id="formFileSm"
-              type="file"
             />
           </form>
         </div>

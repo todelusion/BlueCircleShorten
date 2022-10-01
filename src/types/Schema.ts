@@ -100,6 +100,43 @@ export const schemaUrlLists = z.object({
   ),
 });
 
+export const schemaSingleUrlList = z.object({
+  _id: z.string(),
+  url: z.string(),
+  shortUrl: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  photo: z.string(),
+  tag: z.array(z.unknown()),
+  urlId: z.string(),
+  repeatTimes: z.number(),
+  notRepeatTimes: z.number(),
+  __v: z.number(),
+});
+
+export const schemaSingleUrlChart = z.object({
+  status: z.string(),
+  repeatTimes: z.number(),
+  notRepeatTimes: z.number(),
+  notRepeatList: z.array(
+    z.union([
+      z.object({
+        UserBowse: z.string(),
+        UserInform: z.string(),
+        UserSystem: z.string(),
+        _id: z.string(),
+        createdAt: z.string(),
+      }),
+      z.object({
+        UserInform: z.string(),
+        _id: z.string(),
+        createdAt: z.string(),
+      }),
+    ])
+  ),
+});
+
 export const schemaUrl = z.string().url();
 
 export type UrlLists = z.infer<typeof schemaUrlLists>;
@@ -107,3 +144,7 @@ export type UrlLists = z.infer<typeof schemaUrlLists>;
 export type PostPatchResponse = z.infer<typeof schemaPOST>;
 
 export type ErrorResponse = z.infer<typeof schemaError>;
+
+export type ISingleUrlChart = z.infer<typeof schemaSingleUrlChart>;
+
+export type ISingleUrlList = z.infer<typeof schemaSingleUrlList>;

@@ -2,7 +2,7 @@ import { useOutletContext } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { ThemeColor } from "../../types/Enum";
-
+import { ISingleUrlList } from "../../types/Schema";
 import { useHome } from "./Home";
 import Edit from "./Edit";
 
@@ -14,6 +14,7 @@ export interface InitialToggleModal {
   showEditModal: boolean;
   showChartModal: boolean;
   urlID: string;
+  urlList: ISingleUrlList | null;
 }
 
 const Shorten = (): JSX.Element => {
@@ -21,6 +22,7 @@ const Shorten = (): JSX.Element => {
     showEditModal: false,
     showChartModal: false,
     urlID: "",
+    urlList: null,
   });
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
@@ -89,6 +91,7 @@ const Shorten = (): JSX.Element => {
                       ...prevState,
                       showEditModal: true,
                       urlID: urlList.urlId,
+                      urlList,
                     }))
                   }
                 >
@@ -108,7 +111,7 @@ const Shorten = (): JSX.Element => {
                   value={`${baseShorten.replace("https://", "")}/${
                     urlList.shortUrl
                   }`}
-                  className="col-span-3 max-w-xs cursor-pointer font-black underline sm:max-w-sm sm:text-xl"
+                  className="col-span-3 max-w-xs cursor-pointer text-sm font-black underline sm:max-w-sm xs:text-xl"
                 />
                 <p className="col-span-3 h-10 max-h-10 select-all overflow-hidden break-all text-[4px] font-light selection:bg-third">
                   {urlList.url}
@@ -124,6 +127,7 @@ const Shorten = (): JSX.Element => {
             urlID={toggleModal.urlID}
             setToggleModal={setToggleModal}
             key="EditModal"
+            urlList={toggleModal.urlList}
           />
         )}
         {toggleModal.showChartModal && (

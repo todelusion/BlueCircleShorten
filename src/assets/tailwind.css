@@ -18,7 +18,7 @@
     @apply after:left-1 after:-right-1 after:top-1 after:-bottom-1
   }
   .box-shadow {
-    @apply relative after:absolute after:content-['']  after:-z-10
+    @apply relative after:absolute after:content-[''] after:-z-10
   }
 }
 

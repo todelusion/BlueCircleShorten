@@ -3,6 +3,7 @@ export enum ThemeColor {
   Black = "text-black border-black",
   Primary_Pseudo = "after:bg-primary",
   Slate_Pseudo = "after:bg-slate-500",
+  Third_Pseudo = "after:bg-third",
 }
 
 export enum PendingType {

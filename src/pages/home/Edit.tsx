@@ -1,17 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { ISingleUrlList } from "../../types/Schema";
+import Headers from "../../utils/Headers";
 
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import { PendingType, ThemeColor } from "../../types/Enum";
 import axiosGET from "../../utils/axiosGET";
 import type { InitialToggleModal } from "./Shorten";
-import { unknown } from "zod";
 import Button from "../../components/Button";
 import { iconAddPath } from "../../assets/icon";
 import StatusModal from "../../components/StatusModal";
+import axios from "axios";
+import axiosPOST from "../../utils/axiosPOST";
 
 // 此頁面的路由到app.tsx寫成edit:id才能用useParam()抓從主頁面navigate到edit的ID
 
@@ -22,7 +24,8 @@ interface IEditProps {
 }
 
 const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
-  // const [editInfo, setEditInfo] = useState(initialEditInfo)
+  const { baseUrl, token } = useApi();
+  const formRef = useRef<HTMLFormElement>(null);
   const { pendingResult, setPendingStatus } = usePendingStatus();
   const [tages, setTages] = useState<string[]>([]);
   const [editForm, setEditForm] = useState({
@@ -30,7 +33,21 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
     description: "",
     photo: "",
   });
-  console.log(editForm);
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (formRef.current === null || e.target.files === null) return;
+    const file = Array.from(e.target.files);
+    const formData = new FormData(
+      formRef !== null ? formRef.current : undefined
+    );
+    formData.append("photo", file[0]);
+
+    // axiosPOST({
+    //   url: `${baseUrl}/upload/url_img`,
+    //   formData,
+    //   token,
+    // }).catch((error) => console.log(error));
+  };
 
   useEffect(() => {
     setTages(
@@ -73,7 +90,7 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
         >
           X
         </button>
-        <form className="grid w-full gap-y-7 px-6 py-10 xs:py-14 xs:px-12">
+        <div className="grid w-full gap-y-7 px-6 py-10 xs:py-14 xs:px-12">
           {/* 這裡記得需下判斷更改前與更改後的內容若相同則不發出 */}
           <div>
             <p>
@@ -163,13 +180,27 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
               ))}
             </div>
           </div>
-          <Button
-            label="新增縮圖"
-            className={`${ThemeColor.Third_Pseudo} z-10 mb-10 h-14 max-w-[100px] rounded-full after:rounded-full`}
-            buttonColor={`${ThemeColor.Black} rounded-full text-sm`}
-            underline="no-underline"
-          />
-        </form>
+          <form ref={formRef}>
+            <input
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                handleFile(e);
+              }}
+              className="text-grey-500
+                pointer-events-none
+                mb-10
+                text-xs
+                file:pointer-events-auto
+                file:mr-5
+                file:cursor-pointer
+                file:rounded-full
+                file:border-2
+                file:border-black
+                file:p-4 file:text-xs hover:file:bg-third"
+              id="formFileSm"
+              type="file"
+            />
+          </form>
+        </div>
         <div className="absolute bottom-5 right-20">
           <Button
             label={

@@ -20,6 +20,10 @@
   .box-shadow {
     @apply relative after:absolute after:content-[''] after:-z-10
   }
+  .file-Pseudo {
+    @apply after:file:absolute after:file:content-[''] after:file:left-1 after:file:-right-1 after:file:top-1 after:file:-bottom-1 after:file:-z-10
+  }
+  
 }
 
 /* .urlList > input[type=button] {

@@ -5,13 +5,14 @@ const baseUrl = "https://fast-headland-09301.herokuapp.com";
 
 export interface IAxiosPOST {
   url: string;
-  body: {
+  body?: {
     email?: string;
     name?: string;
     password?: string;
     confirmPassword?: string;
     url?: string;
   };
+  formData?: FormData;
   token?: string;
 }
 
@@ -19,11 +20,14 @@ const axiosPOST = async ({
   url,
   body,
   token,
+  formData,
 }: IAxiosPOST): Promise<unknown> => {
   try {
+    console.log(body);
+    console.log(formData);
     const res = await axios.post(
       url,
-      body,
+      formData !== undefined ? formData : body,
       token !== undefined ? new Headers(token) : {}
     );
     console.log(res);

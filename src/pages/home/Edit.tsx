@@ -291,7 +291,11 @@ const Edit = ({
                 file:p-4 file:text-xs hover:file:bg-third"
             />
             {localPreview !== undefined && localPreview.localUrl !== "" && (
-              <img src={localPreview.localUrl} width="200" alt="preview" />
+              <img
+                src={localPreview.localUrl}
+                alt="preview"
+                className="max-w-[100px] xs:max-w-[200px]"
+              />
             )}
           </form>
         </div>

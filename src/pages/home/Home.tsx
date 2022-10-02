@@ -21,12 +21,6 @@ import axiosDELETE from "../../utils/axiosDELETE";
 // const urlListsReducer = (urlLists: any, action) => {
 //   switch(action.)
 // }
-interface HomeContext {
-  fetchData: (pageNum?: number) => Promise<void>;
-  urlLists: UrlLists | null;
-  onDelete: (urlID: string) => Promise<void>;
-}
-
 const initialCountsOfPages = {
   amountOfPages: [1],
   currentPage: 1,
@@ -39,6 +33,13 @@ export const initialUrlInfo = {
   description: "",
 };
 
+interface HomeContext {
+  fetchData: (pageNum?: number) => Promise<void>;
+  urlLists: UrlLists | null;
+  onDelete: (urlID: string) => Promise<void>;
+  countsOfPages: typeof initialCountsOfPages;
+}
+
 const Home = (): JSX.Element => {
   const location = useLocation();
   const { baseUrl, token } = useApi();
@@ -49,7 +50,7 @@ const Home = (): JSX.Element => {
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
 
   const fetchData = async (pageNum?: number): Promise<void> => {
-    console.log(pageNum);
+    // console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
     try {
       // 取得全部頁面數//
@@ -257,7 +258,7 @@ const Home = (): JSX.Element => {
           </div>
         </li>
       </ul>
-      <Outlet context={{ urlLists, onDelete, fetchData }} />
+      <Outlet context={{ urlLists, onDelete, fetchData, countsOfPages }} />
     </>
   );
 };

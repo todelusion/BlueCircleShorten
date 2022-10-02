@@ -1,18 +1,15 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import React, { ReactNode, useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { AxiosResponse } from "axios";
 import { ISingleUrlList } from "../../types/Schema";
-import Headers from "../../utils/Headers";
 
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import { PendingType, ThemeColor } from "../../types/Enum";
-import axiosGET from "../../utils/axiosGET";
 import type { InitialToggleModal } from "./Shorten";
 import Button from "../../components/Button";
 import { iconAddPath } from "../../assets/icon";
 import StatusModal from "../../components/StatusModal";
-import axios, { AxiosResponse } from "axios";
 import axiosPOST from "../../utils/axiosPOST";
 import axiosPATCH from "../../utils/axiosPATCH";
 import { useHome } from "./Home";
@@ -39,7 +36,7 @@ const Edit = ({
 }: IEditProps): JSX.Element => {
   const formRef = useRef<HTMLFormElement>(null);
   const { baseUrl, token } = useApi();
-  const { fetchData } = useHome();
+  const { fetchData, countsOfPages } = useHome();
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
   const [localPreview, setLocalPreview] = useState<IlocalPreview>();
@@ -72,7 +69,7 @@ const Edit = ({
     if (formRef.current === null || e.target.files === null) return;
 
     const file = Array.from(e.target.files);
-    console.log(file[0]);
+    // console.log(file[0]);
 
     if (file[0].size > 1048576) {
       setPendingStatus(PendingType.isError, true, "檔案不得超過1mb");
@@ -104,8 +101,6 @@ const Edit = ({
   const onSubmit = async (): Promise<void> => {
     if (editInfo.title !== "" && editInfo.description === "") return;
     if (editInfo.title === "" && editInfo.description !== "") return;
-    console.log("onSubmit");
-    console.log(localPreview.file);
     setPendingStatus(PendingType.isPending, true);
 
     let body = {};
@@ -113,7 +108,6 @@ const Edit = ({
       const res = await FileToFormdata(localPreview.file).catch((err) =>
         console.log(err)
       );
-      console.log(res);
       const photo = (res as unknown as AxiosResponse).data.imgUrl;
 
       if (photo === undefined) {
@@ -128,12 +122,14 @@ const Edit = ({
         return;
       }
       body = { ...editInfo, photo };
+    } else {
+      body = editInfo;
     }
 
     axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
       console.log(err)
     );
-    fetchData().catch((err) => console.log(err));
+    fetchData(countsOfPages.currentPage).catch((err) => console.log(err));
     setPendingStatus(PendingType.isPending, false);
     setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
   };
@@ -239,7 +235,6 @@ const Edit = ({
               className="w-full rounded-lg border-2 border-slate-600 outline-none"
               onKeyUp={(e: React.KeyboardEvent): void => {
                 if (e.key === "Enter") {
-                  console.log(tages.length);
                   if (
                     tages.length > 5 ||
                     (e.target as HTMLInputElement).value === ""

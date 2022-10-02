@@ -50,7 +50,6 @@ const Edit = ({
     title: "",
     description: "",
   });
-  console.log(editInfo);
 
   const FileToFormdata = async (
     file: File[]
@@ -105,29 +104,31 @@ const Edit = ({
   const onSubmit = async (): Promise<void> => {
     if (editInfo.title !== "" && editInfo.description === "") return;
     if (editInfo.title === "" && editInfo.description !== "") return;
-    if (localPreview === undefined) return;
     console.log("onSubmit");
     console.log(localPreview.file);
-
     setPendingStatus(PendingType.isPending, true);
-    const res = await FileToFormdata(localPreview.file).catch((err) =>
-      console.log(err)
-    );
-    console.log(res);
-    const photo = (res as unknown as AxiosResponse).data.imgUrl;
 
-    if (photo === undefined) {
-      setPendingStatus(
-        PendingType.isError,
-        true,
-        "無法上傳重複的圖片且無法在短時間內重複上傳圖片"
+    let body = {};
+    if (localPreview !== undefined) {
+      const res = await FileToFormdata(localPreview.file).catch((err) =>
+        console.log(err)
       );
-      setTimeout(() => {
-        setPendingStatus(PendingType.isError, false);
-      }, 2000);
-      return;
+      console.log(res);
+      const photo = (res as unknown as AxiosResponse).data.imgUrl;
+
+      if (photo === undefined) {
+        setPendingStatus(
+          PendingType.isError,
+          true,
+          "無法上傳重複的圖片且無法在短時間內重複上傳圖片"
+        );
+        setTimeout(() => {
+          setPendingStatus(PendingType.isError, false);
+        }, 2000);
+        return;
+      }
+      body = { ...editInfo, photo };
     }
-    const body = { ...editInfo, photo };
 
     axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
       console.log(err)

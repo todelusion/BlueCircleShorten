@@ -28,9 +28,7 @@ const initialCountsOfPages = {
 
 export const initialUrlInfo = {
   url: "",
-  title: "",
-  photo: "",
-  description: "",
+  searchUrl: undefined,
 };
 
 interface HomeContext {
@@ -48,8 +46,12 @@ const Home = (): JSX.Element => {
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
+  console.log(urlInfo);
 
-  const fetchData = async (pageNum?: number): Promise<void> => {
+  const fetchData = async (
+    pageNum?: number,
+    searchUrl?: string
+  ): Promise<void> => {
     // console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
     try {
@@ -68,9 +70,10 @@ const Home = (): JSX.Element => {
       const res = await axiosGET({
         url: `${baseUrl}/url?page=${
           pageNum === undefined ? "1" : pageNum
-        }&limit=4&sort=asc`,
+        }&limit=4&sort=asc${searchUrl === undefined ? "" : `&q=${searchUrl}`}`,
         token,
       });
+
       setPendingStatus(PendingType.isPending, false);
       // console.log(res);
       setUrlLists(schemaUrlLists.parse(res.data));
@@ -154,17 +157,9 @@ const Home = (): JSX.Element => {
     }));
     setPendingStatus(PendingType.isPending, true);
 
-    axiosGET({
-      url: `${baseUrl}/url?page=${clickNum}&limit=4&sort=asc`,
-      token,
-    })
-      .then((res) => {
-        setPendingStatus(PendingType.isPending, false);
-        setUrlLists(schemaUrlLists.parse(res.data));
-      })
-      .catch((error) => {
-        throw error;
-      });
+    fetchData(Number(clickNum), urlInfo.searchUrl).catch((err) =>
+      console.log(err)
+    );
   };
 
   useEffect(() => {
@@ -186,7 +181,7 @@ const Home = (): JSX.Element => {
         <li className="border2 mb-10 flex justify-center">
           <Form
             className={`h-max w-full rounded-full  ${ThemeColor.Slate_Pseudo} after:rounded-full `}
-            label={{ name: "url", description: "TEST" }}
+            label={{ name: "url", description: "url" }}
             hideLabel="hidden"
             handleChange={handleChange}
             onSubmit={onSubmit}
@@ -207,11 +202,15 @@ const Home = (): JSX.Element => {
         <li className="ml-5 flex">
           <Form
             className="w-full max-w-[100px] xs:max-w-[200px]"
-            label={{ name: "TEST", description: "TEST" }}
+            label={{ name: "searchUrl", description: "searchUrl" }}
             hideLabel="hidden"
             showSearchIcon
             showOutline={false}
             input="bg-[#F5F5F5]"
+            handleChange={handleChange}
+            onSubmit={async () => {
+              await fetchData(countsOfPages.currentPage, urlInfo.searchUrl);
+            }}
           />
           <div className="ml-10 md:ml-20">
             {countsOfPages.amountOfPages.map((num, index, array) => (

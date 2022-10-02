@@ -13,6 +13,7 @@ export default function Router(): JSX.Element {
     <Routes>
       <Route path="/" element={<Nav />}>
         <Route path="/" element={<Login />} />
+        <Route path="/callback?/:id" element={<Login />} />
         <Route path="/regist" element={<Regist />} />
         <Route path="/findpassword" element={<FindPassword />} />
         <Route path="/findpassword/success" element={<FindPasswordSuccess />} />

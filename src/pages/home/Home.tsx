@@ -45,8 +45,9 @@ const Home = (): JSX.Element => {
   // const [urlLists, dispatch] = useReducer(urlListsReducer, []);
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
+  console.log(urlLists);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
-  console.log(urlInfo);
+  // console.log(urlInfo);
 
   const fetchData = async (
     pageNum?: number,
@@ -73,6 +74,7 @@ const Home = (): JSX.Element => {
         }&limit=4&sort=asc${searchUrl === undefined ? "" : `&q=${searchUrl}`}`,
         token,
       });
+      // console.log(res);
 
       setPendingStatus(PendingType.isPending, false);
       // console.log(res);

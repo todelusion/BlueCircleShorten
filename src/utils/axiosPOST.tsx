@@ -11,6 +11,7 @@ export interface IAxiosPOST {
     password?: string;
     confirmPassword?: string;
     url?: string;
+    tag?: string[];
   };
   formData?: FormData;
   token?: string;

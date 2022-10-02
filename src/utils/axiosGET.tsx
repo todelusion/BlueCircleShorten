@@ -9,7 +9,7 @@ export interface IAxiosGET {
 const axiosGET = async ({ url, token }: IAxiosGET): Promise<AxiosResponse> => {
   const headers = token !== undefined ? new Headers(token) : {};
   const res = await axios.get(url, headers);
-  console.log(res);
+  // console.log(res);
   return res;
 };
 export default axiosGET;

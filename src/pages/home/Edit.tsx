@@ -23,7 +23,7 @@ interface IEditProps {
   setToggleModal: (value: React.SetStateAction<InitialToggleModal>) => void;
 }
 
-interface IlocalPreview {
+interface IImageFile {
   file: File[];
   localUrl: string;
 }
@@ -39,10 +39,11 @@ const Edit = ({
   const { fetchData, countsOfPages } = useHome();
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
-  const [localPreview, setLocalPreview] = useState<IlocalPreview>();
-  // console.log(localPreview);
+  const [ImageFile, setImageFile] = useState<IImageFile>();
+  // console.log(ImageFile);
 
-  const [tages, setTages] = useState<string[]>([]);
+  const [tag, setTag] = useState<string[]>([]);
+  console.log(tag);
   const [editInfo, setEditInfo] = useState({
     title: "",
     description: "",
@@ -93,7 +94,7 @@ const Edit = ({
           }, 2000);
           return;
         }
-        setLocalPreview({ file, localUrl: reader.result as string });
+        setImageFile({ file, localUrl: reader.result as string });
       };
     };
   };
@@ -104,8 +105,8 @@ const Edit = ({
     setPendingStatus(PendingType.isPending, true);
 
     let body = {};
-    if (localPreview !== undefined) {
-      const res = await FileToFormdata(localPreview.file).catch((err) =>
+    if (ImageFile !== undefined) {
+      const res = await FileToFormdata(ImageFile.file).catch((err) =>
         console.log(err)
       );
       const photo = (res as unknown as AxiosResponse).data.imgUrl;
@@ -126,6 +127,12 @@ const Edit = ({
       body = editInfo;
     }
 
+    // axiosPOST({
+    //   url: `${baseUrl}/url/${urlID}/tag`,
+    //   body: { tag },
+    //   token,
+    // }).catch((err) => console.log(err));
+
     axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
       console.log(err)
     );
@@ -134,12 +141,12 @@ const Edit = ({
     setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
   };
 
-  const deleteTags = (tag: string): void => {
-    setTages(tages.filter((item) => item !== tag));
+  const deleteTags = (singleTag: string): void => {
+    setTag(tag.filter((item) => item !== singleTag));
   };
 
   useEffect(() => {
-    setTages(
+    setTag(
       (urlList?.tag as string[]).map((item) => (item !== undefined ? item : ""))
     );
   }, []);
@@ -226,7 +233,7 @@ const Edit = ({
           <div className="mb-5">
             <p>
               請輸入標籤（可選）
-              {tages.length === 6 && (
+              {tag.length === 6 && (
                 <span className="text-xs text-red-700">標籤最多6個</span>
               )}
             </p>
@@ -236,12 +243,12 @@ const Edit = ({
               onKeyUp={(e: React.KeyboardEvent): void => {
                 if (e.key === "Enter") {
                   if (
-                    tages.length > 5 ||
+                    tag.length > 5 ||
                     (e.target as HTMLInputElement).value === ""
                   )
                     return;
 
-                  if (tages.includes((e.target as HTMLInputElement).value)) {
+                  if (tag.includes((e.target as HTMLInputElement).value)) {
                     setPendingStatus(
                       PendingType.isError,
                       true,
@@ -252,21 +259,22 @@ const Edit = ({
                     }, 1000);
                     return;
                   }
-                  setTages([...tages, (e.target as HTMLInputElement).value]);
+
+                  setTag([...tag, (e.target as HTMLInputElement).value]);
                   (e.target as HTMLInputElement).value = "";
                 }
               }}
             />
             <div className="flex flex-wrap">
-              {tages.map((tag, index) => (
+              {tag.map((singleTag, index) => (
                 <button
                   type="button"
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
-                  onClick={() => deleteTags(tag)}
+                  onClick={() => deleteTags(singleTag)}
                   className="relative m-1 rounded-md border-2 border-black bg-third px-3 py-1 text-xs hover:line-through"
                 >
-                  {tag}
+                  {singleTag}
                 </button>
               ))}
             </div>
@@ -290,9 +298,9 @@ const Edit = ({
                 file:border-black
                 file:p-4 file:text-xs hover:file:bg-third"
             />
-            {localPreview !== undefined && localPreview.localUrl !== "" && (
+            {ImageFile !== undefined && ImageFile.localUrl !== "" && (
               <img
-                src={localPreview.localUrl}
+                src={ImageFile.localUrl}
                 alt="preview"
                 className="max-w-[100px] xs:max-w-[200px]"
               />

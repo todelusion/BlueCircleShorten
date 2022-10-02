@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { ThemeColor, PendingType } from "../../types/Enum";
 
 import type { IApiReducer } from "../../context/ApiContext";
@@ -17,15 +19,14 @@ const initialState = {
 };
 
 export default function Login(): JSX.Element {
-
-
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-
+  const params = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
     useApi();
   if (dispatch === undefined) window.location.reload();
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -48,6 +49,18 @@ export default function Login(): JSX.Element {
       payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },
     });
   };
+
+  useEffect(() => {
+    const stringTokenIndex = window.location.href.indexOf("token=");
+    const stringNameIndex = window.location.href.indexOf("&name");
+    const query = window.location.href.slice(stringTokenIndex, stringNameIndex);
+    const token = query.replace("token=", "");
+    sessionStorage.setItem("token", token);
+
+    if (window.location.href.includes("callback?token=")) {
+      navigate("/home");
+    }
+  }, []);
 
   return (
     <>
@@ -90,6 +103,17 @@ export default function Login(): JSX.Element {
               className={`${ThemeColor.Primary_Pseudo}  text-sm`}
             />
           </Link>
+          <a
+            href={`${baseUrl}/users/google`}
+            className="h-11 w-full max-w-[50px] md:h-14 md:max-w-[70px]"
+          >
+            <Button
+              label={<FontAwesomeIcon icon={faGoogle} />}
+              buttonColor={ThemeColor.Primary}
+              underline="underline"
+              className={`${ThemeColor.Primary_Pseudo}  text-sm`}
+            />
+          </a>
           <Button
             onSubmit={onSubmit}
             label="登入"

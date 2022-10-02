@@ -1,33 +1,44 @@
 import axios from "axios";
 import Headers from "./Headers";
 
-export interface IAxiosPOST {
+export interface IAxiosPATCH {
   url: string;
-  body: {
-    email?: string;
-    name?: string;
-    password?: string;
-    confirmPassword?: string;
-  };
+  body?: IAccountsInfo | IUrlInfo;
+  formData?: FormData;
   token?: string;
+}
+
+interface IUrlInfo {
+  url?: string;
+  title?: string;
+  description?: string;
+  photo?: string;
+}
+interface IAccountsInfo {
+  email?: string;
+  name?: string;
+  password?: string;
+  confirmPassword?: string;
 }
 
 const axiosPATCH = async ({
   url,
   body,
   token,
-}: IAxiosPOST): Promise<Response | unknown> => {
+  formData,
+}: IAxiosPATCH): Promise<Response | unknown> => {
   try {
-    console.log(url, body, token !== undefined ? new Headers(token) : {});
-
+    console.log(body);
+    console.log(formData);
     const res = await axios.patch(
       url,
-      body,
+      formData !== undefined ? formData : body,
       token !== undefined ? new Headers(token) : {}
     );
     console.log(res);
     return res;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

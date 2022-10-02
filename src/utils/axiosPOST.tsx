@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Headers from "./Headers";
 
 const baseUrl = "https://fast-headland-09301.herokuapp.com";
@@ -21,7 +21,7 @@ const axiosPOST = async ({
   body,
   token,
   formData,
-}: IAxiosPOST): Promise<unknown> => {
+}: IAxiosPOST): Promise<unknown | AxiosResponse> => {
   try {
     console.log(body);
     console.log(formData);

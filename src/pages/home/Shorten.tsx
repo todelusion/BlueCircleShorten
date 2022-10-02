@@ -14,6 +14,7 @@ export interface InitialToggleModal {
   showEditModal: boolean;
   showChartModal: boolean;
   urlID: string;
+  _id: string;
   urlList: ISingleUrlList | null;
 }
 
@@ -22,6 +23,7 @@ const Shorten = (): JSX.Element => {
     showEditModal: false,
     showChartModal: false,
     urlID: "",
+    _id: "",
     urlList: null,
   });
   const { baseShorten } = useApi();
@@ -30,7 +32,7 @@ const Shorten = (): JSX.Element => {
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
     <div className="absolute top-52 mb-10 flex w-full justify-center px-10">
-      <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-1/2 xl:grid-cols-2">
+      <ul className="mb-5 grid w-full grid-cols-1 justify-items-center gap-x-5 gap-y-5 xl:w-2/3 xl:grid-cols-2">
         {urlLists.urlList.map((urlList) => (
           <li
             key={urlList.urlId}
@@ -64,58 +66,67 @@ const Shorten = (): JSX.Element => {
                   />
                 </button>
               </div>
-              <div className="urlList grid max-w-xs grid-cols-3 items-center justify-items-start gap-x-3 gap-y-1">
-                <p className="w-max text-center leading-6">
-                  <span className="text-[56px] font-bold">
-                    {urlList.notRepeatTimes}
-                  </span>
-                  <br />
-                  點擊次數
-                </p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setToggleModal((prevState) => ({
-                      ...prevState,
-                      showChartModal: true,
-                      urlID: urlList.urlId,
-                    }))
-                  }
-                >
-                  <img src={iconChartPath} alt="chart" className="w-8" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setToggleModal((prevState) => ({
-                      ...prevState,
-                      showEditModal: true,
-                      urlID: urlList.urlId,
-                      urlList,
-                    }))
-                  }
-                >
-                  <img src={iconEditPath} alt="edit" className="w-8" />
-                </button>
-                <input
-                  type="button"
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    const inputValue = `https://${
-                      (e.target as HTMLInputElement).value
-                    }`;
-                    navigator.clipboard
-                      .writeText(inputValue)
-                      .catch((error) => console.log(error));
-                    window.open(inputValue, "_blank");
-                  }}
-                  value={`${baseShorten.replace("https://", "")}/${
-                    urlList.shortUrl
-                  }`}
-                  className="col-span-3 max-w-xs cursor-pointer text-sm font-black underline sm:max-w-sm xs:text-xl"
-                />
-                <p className="col-span-3 h-10 max-h-10 select-all overflow-hidden break-all text-[4px] font-light selection:bg-third">
-                  {urlList.url}
-                </p>
+              <div className="flex items-center">
+                <div className="urlList grid max-w-xs grid-cols-3 items-center justify-items-start gap-x-3 gap-y-1">
+                  <p className="w-max text-center leading-6">
+                    <span className="text-[56px] font-bold">
+                      {urlList.notRepeatTimes}
+                    </span>
+                    <br />
+                    點擊次數
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setToggleModal((prevState) => ({
+                        ...prevState,
+                        showChartModal: true,
+                        urlID: urlList.urlId,
+                      }))
+                    }
+                  >
+                    <img src={iconChartPath} alt="chart" className="w-8" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setToggleModal((prevState) => ({
+                        ...prevState,
+                        showEditModal: true,
+                        urlID: urlList.urlId,
+                        // eslint-disable-next-line no-underscore-dangle
+                        _id: urlList._id,
+                        urlList,
+                      }))
+                    }
+                  >
+                    <img src={iconEditPath} alt="edit" className="w-8" />
+                  </button>
+                  <input
+                    type="button"
+                    onClick={(e: React.MouseEvent<HTMLElement>) => {
+                      const inputValue = `https://${
+                        (e.target as HTMLInputElement).value
+                      }`;
+                      navigator.clipboard
+                        .writeText(inputValue)
+                        .catch((error) => console.log(error));
+                      window.open(inputValue, "_blank");
+                    }}
+                    value={`${baseShorten.replace("https://", "")}/${
+                      urlList.shortUrl
+                    }`}
+                    className="col-span-3 max-w-xs cursor-pointer text-sm font-black underline sm:max-w-sm xs:text-xl"
+                  />
+                  <p className="col-span-3 h-10 max-h-10 select-all overflow-hidden break-all text-[4px] font-light selection:bg-third">
+                    {urlList.url}
+                  </p>
+                </div>
+                {urlList.photo !== "" && (
+                  <div className="ml-10 hidden max-w-[100px] sm:block">
+                    <img src={urlList.photo} alt="OG" loading="lazy" />
+                  </div>
+                )}
               </div>
             </div>
           </li>
@@ -124,6 +135,8 @@ const Shorten = (): JSX.Element => {
       <AnimatePresence>
         {toggleModal.showEditModal && (
           <Edit
+            // eslint-disable-next-line no-underscore-dangle
+            _id={toggleModal._id}
             urlID={toggleModal.urlID}
             setToggleModal={setToggleModal}
             key="EditModal"

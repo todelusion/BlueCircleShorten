@@ -12,31 +12,69 @@ import type { InitialToggleModal } from "./Shorten";
 import Button from "../../components/Button";
 import { iconAddPath } from "../../assets/icon";
 import StatusModal from "../../components/StatusModal";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import axiosPOST from "../../utils/axiosPOST";
+import axiosPATCH from "../../utils/axiosPATCH";
+import { useHome } from "./Home";
 
 // 此頁面的路由到app.tsx寫成edit:id才能用useParam()抓從主頁面navigate到edit的ID
 
 interface IEditProps {
   urlList: ISingleUrlList | null;
   urlID: string;
+  _id: string;
   setToggleModal: (value: React.SetStateAction<InitialToggleModal>) => void;
 }
 
-const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
-  const { baseUrl, token } = useApi();
+interface IlocalPreview {
+  file: File[];
+  localUrl: string;
+}
+
+const Edit = ({
+  urlID,
+  _id,
+  urlList,
+  setToggleModal,
+}: IEditProps): JSX.Element => {
   const formRef = useRef<HTMLFormElement>(null);
+  const { baseUrl, token } = useApi();
+  const { fetchData } = useHome();
   const { pendingResult, setPendingStatus } = usePendingStatus();
+
+  const [localPreview, setLocalPreview] = useState<IlocalPreview>();
+  // console.log(localPreview);
+
   const [tages, setTages] = useState<string[]>([]);
-  const [editForm, setEditForm] = useState({
+  const [editInfo, setEditInfo] = useState({
     title: "",
     description: "",
-    photo: "",
   });
+  console.log(editInfo);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const FileToFormdata = async (
+    file: File[]
+  ): Promise<AxiosResponse | undefined> => {
+    if (formRef.current === null) return undefined;
+    const formData = new FormData(
+      formRef !== null ? formRef.current : undefined
+    );
+    formData.append("photo", file[0]);
+
+    const res = await axiosPOST({
+      url: `${baseUrl}/upload/url_img`,
+      formData,
+      token,
+    });
+    return res as AxiosResponse;
+  };
+
+  const previewFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (formRef.current === null || e.target.files === null) return;
+
     const file = Array.from(e.target.files);
+    console.log(file[0]);
+
     if (file[0].size > 1048576) {
       setPendingStatus(PendingType.isError, true, "檔案不得超過1mb");
       setTimeout(() => {
@@ -45,16 +83,62 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
       return;
     }
 
-    const formData = new FormData(
-      formRef !== null ? formRef.current : undefined
-    );
-    formData.append("photo", file[0]);
+    const reader = new FileReader();
+    reader.readAsDataURL(file[0]);
 
-    axiosPOST({
-      url: `${baseUrl}/upload/url_img`,
-      formData,
-      token,
-    }).catch((error) => console.log(error));
+    reader.onload = () => {
+      const image = new Image();
+      image.src = reader.result as string;
+      image.onload = () => {
+        if (image.width < image.height) {
+          setPendingStatus(PendingType.isError, true, "圖片高度不得長於寬度");
+          setTimeout(() => {
+            setPendingStatus(PendingType.isError, false);
+          }, 2000);
+          return;
+        }
+        setLocalPreview({ file, localUrl: reader.result as string });
+      };
+    };
+  };
+
+  const onSubmit = async (): Promise<void> => {
+    if (editInfo.title !== "" && editInfo.description === "") return;
+    if (editInfo.title === "" && editInfo.description !== "") return;
+    if (localPreview === undefined) return;
+    console.log("onSubmit");
+    console.log(localPreview.file);
+
+    setPendingStatus(PendingType.isPending, true);
+    const res = await FileToFormdata(localPreview.file).catch((err) =>
+      console.log(err)
+    );
+    console.log(res);
+    const photo = (res as unknown as AxiosResponse).data.imgUrl;
+
+    if (photo === undefined) {
+      setPendingStatus(
+        PendingType.isError,
+        true,
+        "無法上傳重複的圖片且無法在短時間內重複上傳圖片"
+      );
+      setTimeout(() => {
+        setPendingStatus(PendingType.isError, false);
+      }, 2000);
+      return;
+    }
+    const body = { ...editInfo, photo };
+
+    axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
+      console.log(err)
+    );
+    fetchData().catch((err) => console.log(err));
+    setPendingStatus(PendingType.isPending, false);
+    setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
+  };
+
+  const deleteTags = (tag: string): void => {
+    setTages(tages.filter((item) => item !== tag));
   };
 
   useEffect(() => {
@@ -63,17 +147,13 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
     );
   }, []);
 
-  const deleteTags = (tag: string): void => {
-    setTages(tages.filter((item) => item !== tag));
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed left-0 right-0 top-0 bottom-0 flex items-center justify-center bg-black/50"
+      className="fixed left-0 right-0 top-0 bottom-0 flex items-center justify-center bg-black/50 pt-20"
     >
       <div
         className={`${
@@ -103,19 +183,19 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
           <div>
             <p>
               標題
-              {/* {editForm.title !== "" && (
-                <span className="text-xs text-red-700">
-                  標題與描述必須同時一起送出
+              {editInfo.title !== "" && editInfo.description === "" && (
+                <span className="ml-2 text-xs text-primary">
+                  提醒：標題與描述必須同時不得為空
                 </span>
-              )} */}
+              )}
             </p>
 
             <input
               type="text"
               placeholder={urlList?.title}
-              value={editForm.title}
+              value={editInfo.title}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEditForm((prevState) => ({
+                setEditInfo((prevState) => ({
                   ...prevState,
                   title: e.target.value,
                 }))
@@ -125,13 +205,20 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
           </div>
 
           <div>
-            <p>描述</p>
+            <p>
+              描述
+              {editInfo.title === "" && editInfo.description !== "" && (
+                <span className="ml-2 text-xs text-primary">
+                  提醒：標題與描述必須同時不得為空
+                </span>
+              )}
+            </p>
             <input
               type="text"
               placeholder={urlList?.description}
-              value={editForm.description}
+              value={editInfo.description}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEditForm((prevState) => ({
+                setEditInfo((prevState) => ({
                   ...prevState,
                   description: e.target.value,
                 }))
@@ -193,7 +280,7 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
               type="file"
               accept="image/*"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleFile(e);
+                previewFile(e);
               }}
               className="text-grey-500
                 pointer-events-none
@@ -207,6 +294,9 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
                 file:border-black
                 file:p-4 file:text-xs hover:file:bg-third"
             />
+            {localPreview !== undefined && localPreview.localUrl !== "" && (
+              <img src={localPreview.localUrl} width="200" alt="preview" />
+            )}
           </form>
         </div>
         <div className="absolute bottom-5 right-20">
@@ -219,6 +309,7 @@ const Edit = ({ urlID, urlList, setToggleModal }: IEditProps): JSX.Element => {
             buttonColor={`${ThemeColor.Black} rounded-full border-primary`}
             underline="no-underline"
             className={`${ThemeColor.Primary_Pseudo} ml-11 h-14 max-w-[70px] rounded-full after:rounded-full`}
+            onSubmit={onSubmit}
           />
         </div>
       </div>

@@ -22,6 +22,7 @@ import axiosDELETE from "../../utils/axiosDELETE";
 //   switch(action.)
 // }
 interface HomeContext {
+  fetchData: (pageNum?: number) => Promise<void>;
   urlLists: UrlLists | null;
   onDelete: (urlID: string) => Promise<void>;
 }
@@ -74,7 +75,7 @@ const Home = (): JSX.Element => {
       setUrlLists(schemaUrlLists.parse(res.data));
     } catch (error) {
       setPendingStatus(PendingType.isPending, false);
-      setPendingStatus(PendingType.isError, true, "系統錯誤請重新整理");
+      setPendingStatus(PendingType.isError, true, "系統錯誤請重新登入");
       setTimeout(() => {
         setPendingStatus(PendingType.isError, false);
       }, 1000);
@@ -256,7 +257,7 @@ const Home = (): JSX.Element => {
           </div>
         </li>
       </ul>
-      <Outlet context={{ urlLists, onDelete }} />
+      <Outlet context={{ urlLists, onDelete, fetchData }} />
     </>
   );
 };

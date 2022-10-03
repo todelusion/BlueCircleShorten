@@ -137,6 +137,16 @@ export const schemaSingleUrlChart = z.object({
   ),
 });
 
+export const schemaProfileData = z.object({
+  status: z.string(),
+  user: z.object({
+    _id: z.string(),
+    name: z.string(),
+    photo: z.string(),
+    __v: z.number(),
+  }),
+});
+
 export const schemaUrl = z.string().url();
 
 export type UrlLists = z.infer<typeof schemaUrlLists>;
@@ -148,3 +158,5 @@ export type ErrorResponse = z.infer<typeof schemaError>;
 export type ISingleUrlChart = z.infer<typeof schemaSingleUrlChart>;
 
 export type ISingleUrlList = z.infer<typeof schemaSingleUrlList>;
+
+export type IProfileData = z.infer<typeof schemaProfileData>;

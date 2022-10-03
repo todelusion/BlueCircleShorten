@@ -135,10 +135,8 @@ const Edit = ({
     //   token,
     // }).catch((err) => console.log(err));
 
-    axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
-      console.log(err)
-    );
-    fetchData(countsOfPages.currentPage).catch((err) => console.log(err));
+    await axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token });
+    await fetchData(countsOfPages.currentPage);
     setPendingStatus(PendingType.isPending, false);
     setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
   };
@@ -229,7 +227,6 @@ const Edit = ({
           X
         </button>
         <div className="grid w-full gap-y-7 px-6 py-10 xs:py-14 xs:px-12">
-          {/* 這裡記得需下判斷更改前與更改後的內容若相同則不發出 */}
           <div>
             <p>
               標題

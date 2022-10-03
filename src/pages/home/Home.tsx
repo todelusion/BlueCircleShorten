@@ -1,6 +1,8 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { Outlet, useOutletContext } from "react-router-dom";
 import { AxiosError } from "axios";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -14,6 +16,8 @@ import usePendingStatus from "../../hooks/usePendingStatus";
 import StatusModal from "../../components/StatusModal";
 import axiosPOST from "../../utils/axiosPOST";
 import axiosDELETE from "../../utils/axiosDELETE";
+import Account from "./Account";
+import { AnimatePresence } from "framer-motion";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -43,6 +47,7 @@ const Home = (): JSX.Element => {
   // const [urlLists, dispatch] = useReducer(urlListsReducer, []);
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
+  const [toggleAccountsModal, setToggleAccountsModal] = useState(false);
   console.log(urlLists);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
   // console.log(urlInfo);
@@ -198,6 +203,15 @@ const Home = (): JSX.Element => {
             className={`${ThemeColor.Primary_Pseudo} ml-11 h-14 max-w-[70px] rounded-full after:rounded-full`}
             onSubmit={onSubmit}
           />
+          <Button
+            label={<FontAwesomeIcon icon={faUser} className="w" />}
+            buttonColor={`${ThemeColor.Black} rounded-full`}
+            underline="no-underline"
+            className={`${ThemeColor.Primary_Pseudo} ml-11 h-14 max-w-[70px] rounded-full after:rounded-full`}
+            onSubmit={() => {
+              setToggleAccountsModal(true);
+            }}
+          />
         </li>
         <li className="ml-5 flex">
           <Form
@@ -257,6 +271,15 @@ const Home = (): JSX.Element => {
           </div>
         </li>
       </ul>
+      <AnimatePresence>
+        {toggleAccountsModal && (
+          <Account
+            key="AccountModal"
+            setToggleAccountsModal={setToggleAccountsModal}
+          />
+        )}
+      </AnimatePresence>
+
       <Outlet context={{ urlLists, onDelete, fetchData, countsOfPages }} />
     </>
   );

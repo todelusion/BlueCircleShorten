@@ -61,17 +61,16 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
     const browserClick = _singleUrlInfo?.notRepeatList.reduce<{
       [index: string]: number;
     }>((result, item) => {
-      type UserBowse = Extract<typeof item, { UserBowse: string }>;
-      const itemUserBowse = item as UserBowse;
+      type User = Extract<typeof item, { UserBowse: string }>;
+      const itemUser = item as User;
 
-      if (itemUserBowse.UserBowse in result) {
-        result[itemUserBowse.UserBowse] += 1;
-      } else {
-        result[itemUserBowse.UserBowse] = 1;
-      }
+      // if (itemUserBowse.UserBowse in result) {
+      //   result[itemUserBowse.UserBowse] += 1;
+      // } else {
+      //   result[itemUserBowse.UserBowse] = 1;
+      // }
       return result;
     }, {});
-    console.log(browserClick);
   };
 
   useEffect(() => {

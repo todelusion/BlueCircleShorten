@@ -70,6 +70,6 @@ export const data = {
 };
 
 export default function ChartLine({ singleUrlInfo }: IChartLine): JSX.Element {
-  console.log(singleUrlInfo);
+  // console.log(singleUrlInfo);
   return <Line options={options} data={data} />;
 }

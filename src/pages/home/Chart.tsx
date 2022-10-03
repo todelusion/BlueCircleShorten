@@ -15,6 +15,20 @@ interface IChartProps {
   urlID: string;
   setToggleModal: (value: React.SetStateAction<InitialToggleModal>) => void;
 }
+interface ICalcNoRepeatClick {
+  brwoser: [
+    {
+      type: string;
+      clickTimes: number;
+    }
+  ];
+  system: [
+    {
+      type: string;
+      clickTimes: number;
+    }
+  ];
+}
 
 const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
   const [singleUrlInfo, setSingleUrlInfo] = useState<ISingleUrlChart | null>(
@@ -23,7 +37,7 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
   const { baseUrl, token } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
-  console.log(singleUrlInfo);
+  // console.log(singleUrlInfo);
 
   const fetchSingleData = async (): Promise<void> => {
     if (urlID === undefined || urlID === "") return;
@@ -37,6 +51,27 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const calcNoRepeatClick = (
+    _singleUrlInfo?: ISingleUrlChart
+  ): ICalcNoRepeatClick => {
+    console.log("in calcNoRepeatClick");
+    console.log(_singleUrlInfo);
+    const browserClick = _singleUrlInfo?.notRepeatList.reduce<{
+      [index: string]: number;
+    }>((result, item) => {
+      type UserBowse = Extract<typeof item, { UserBowse: string }>;
+      const itemUserBowse = item as UserBowse;
+
+      if (itemUserBowse.UserBowse in result) {
+        result[itemUserBowse.UserBowse] += 1;
+      } else {
+        result[itemUserBowse.UserBowse] = 1;
+      }
+      return result;
+    }, {});
+    console.log(browserClick);
   };
 
   useEffect(() => {
@@ -53,7 +88,7 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
         />
       </div>
     );
-
+  calcNoRepeatClick(singleUrlInfo);
   return (
     <motion.div
       initial={{ opacity: 0 }}

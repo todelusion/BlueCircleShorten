@@ -88,7 +88,7 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
           X
         </button>
         <p className="font-dela text-4xl">預留位</p>
-        <ChartLine />
+        {/* <ChartLine singleUrlInfo={singleUrlInfo} /> */}
       </div>
     </motion.div>
   );

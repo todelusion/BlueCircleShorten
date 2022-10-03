@@ -1,5 +1,4 @@
-import { useOutletContext } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ThemeColor } from "../../types/Enum";
 import { ISingleUrlList } from "../../types/Schema";
@@ -43,10 +42,12 @@ const Shorten = (): JSX.Element => {
               className={`lg-Pseudo box-shadow flex h-60 flex-col justify-between border-2 bg-white py-3 px-4 ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
             >
               <div className="relative">
-                {urlList.tag.map((tag) => (
+                {urlList.tag.map((tag, index) => (
                   <button
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
                     type="button"
-                    className="rounded-lg bg-slate-600 px-2 py-1 text-xs text-white"
+                    className="m-1 rounded-lg bg-slate-600 px-2 py-1 text-xs text-white"
                   >
                     {`#${tag as string}`}
                   </button>

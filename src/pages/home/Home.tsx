@@ -1,7 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Outlet, useOutletContext, useLocation } from "react-router-dom";
-import { AxiosError, AxiosResponse } from "axios";
-import { AnimatePresence } from "framer-motion";
+import { Outlet, useOutletContext } from "react-router-dom";
+import { AxiosError } from "axios";
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -39,7 +38,6 @@ interface HomeContext {
 }
 
 const Home = (): JSX.Element => {
-  const location = useLocation();
   const { baseUrl, token } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
   // const [urlLists, dispatch] = useReducer(urlListsReducer, []);

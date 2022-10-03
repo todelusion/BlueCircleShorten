@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { ThemeColor, PendingType } from "../../types/Enum";
@@ -20,8 +20,6 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const params = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
@@ -83,6 +81,7 @@ export default function Login(): JSX.Element {
             status: loginInfo.email.match(RegExpEmail) === null,
             message: "請輸入正確的電子郵件格式",
           }}
+          type="email"
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-14 lg:h-24`}
@@ -92,6 +91,7 @@ export default function Login(): JSX.Element {
             status: loginInfo.password.match(RegExpPassword) === null,
             message: "請輸入正確的密碼格式",
           }}
+          type="password"
         />
         <div className="mb-10 flex items-end justify-between">
           <Link

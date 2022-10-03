@@ -19,6 +19,7 @@ interface FormPops {
   showSearchIcon?: boolean;
   showOutline?: boolean;
   urlInfo?: typeof initialUrlInfo;
+  type?: string;
 }
 
 function Form({
@@ -32,6 +33,7 @@ function Form({
   showSearchIcon,
   showOutline,
   urlInfo,
+  type,
 }: FormPops): JSX.Element {
   const checkUrlInfo = (): string | undefined => {
     if (urlInfo !== undefined) return urlInfo.url;
@@ -65,6 +67,7 @@ function Form({
             input as string
           }`}
           name={label.name}
+          type={type}
           value={checkUrlInfo()}
           onKeyUp={(e): void => {
             if (e.key === "Enter" && onSubmit !== undefined)
@@ -100,6 +103,7 @@ Form.defaultProps = {
   showSearchIcon: false,
   showOutline: true,
   urlInfo: {},
+  type: "text",
 };
 
 export default Form;

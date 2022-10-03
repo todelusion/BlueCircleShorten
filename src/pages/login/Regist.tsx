@@ -75,6 +75,7 @@ export default function Login(): JSX.Element {
             status: RegistInfo.email.match(RegExpEmail) === null,
             message: "請輸入正確的電子郵件格式",
           }}
+          type="email"
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10`}
@@ -93,6 +94,7 @@ export default function Login(): JSX.Element {
             status: RegistInfo.password.match(RegExpPassword) === null,
             message: "｜密碼至少8個字元以上｜包含1個大小與1個特殊字元｜",
           }}
+          type="password"
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-5`}
@@ -104,6 +106,7 @@ export default function Login(): JSX.Element {
               RegistInfo.confirmPassword.length === 0,
             message: "請確認密碼是否一致",
           }}
+          type="password"
         />
         <div className="mb-10 flex items-end justify-between">
           <div className="flex w-full items-end">

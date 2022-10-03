@@ -30,6 +30,7 @@ const axiosPATCH = async ({
   try {
     console.log(body);
     console.log(formData);
+    console.log(token !== undefined ? new Headers(token) : {});
     const res = await axios.patch(
       url,
       formData !== undefined ? formData : body,

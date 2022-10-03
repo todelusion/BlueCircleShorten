@@ -13,6 +13,7 @@ import StatusModal from "../../components/StatusModal";
 import axiosPOST from "../../utils/axiosPOST";
 import axiosPATCH from "../../utils/axiosPATCH";
 import { useHome } from "./Home";
+import axiosDELETE from "../../utils/axiosDELETE";
 
 // 此頁面的路由到app.tsx寫成edit:id才能用useParam()抓從主頁面navigate到edit的ID
 
@@ -43,7 +44,7 @@ const Edit = ({
   // console.log(ImageFile);
 
   const [tag, setTag] = useState<string[]>([]);
-  console.log(tag);
+  // console.log(tag);
   const [editInfo, setEditInfo] = useState({
     title: "",
     description: "",
@@ -128,11 +129,11 @@ const Edit = ({
     }
     console.log(tag);
 
-    axiosPOST({
-      url: `${baseUrl}/url/${urlID}/tag`,
-      body: { tag },
-      token,
-    }).catch((err) => console.log(err));
+    // axiosPOST({
+    //   url: `${baseUrl}/url/${_id}/tag`,
+    //   body: { tag },
+    //   token,
+    // }).catch((err) => console.log(err));
 
     axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
       console.log(err)
@@ -142,8 +143,49 @@ const Edit = ({
     setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
   };
 
+  const addTags = (e: React.KeyboardEvent): void => {
+    const singleTagValue = (e.target as HTMLInputElement).value;
+
+    if (tag.length > 5 || singleTagValue === "") return;
+
+    if (tag.includes(singleTagValue)) {
+      setPendingStatus(PendingType.isError, true, "不能輸入相同標籤");
+      setTimeout(() => {
+        setPendingStatus(PendingType.isError, false);
+      }, 1000);
+      return;
+    }
+
+    setPendingStatus(PendingType.isPending, true);
+    axiosPOST({
+      url: `${baseUrl}/url/${_id}/tag`,
+      body: { tag: [singleTagValue] },
+      token,
+    })
+      .then((res) => {
+        console.log(res);
+        setPendingStatus(PendingType.isPending, false);
+        setTag([...tag, singleTagValue]);
+      })
+      .catch((err) => console.log(err));
+
+    (e.target as HTMLInputElement).value = "";
+  };
+
   const deleteTags = (singleTag: string): void => {
-    setTag(tag.filter((item) => item !== singleTag));
+    setPendingStatus(PendingType.isPending, true);
+
+    axiosDELETE({
+      url: `${baseUrl}/url/${_id}/tag`,
+      token,
+      tag: [singleTag],
+    })
+      .then((res) => {
+        console.log(res);
+        setPendingStatus(PendingType.isPending, false);
+        setTag(tag.filter((item) => item !== singleTag));
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -178,6 +220,9 @@ const Edit = ({
               showEditModal: false,
               urlID: "",
             }));
+            fetchData(countsOfPages.currentPage).catch((err) =>
+              console.log(err)
+            );
           }}
           className="absolute right-3 top-3 font-sans text-2xl font-bold"
         >
@@ -242,28 +287,8 @@ const Edit = ({
               type="text"
               className="w-full rounded-lg border-2 border-slate-600 outline-none"
               onKeyUp={(e: React.KeyboardEvent): void => {
-                if (e.key === "Enter") {
-                  if (
-                    tag.length > 5 ||
-                    (e.target as HTMLInputElement).value === ""
-                  )
-                    return;
-
-                  if (tag.includes((e.target as HTMLInputElement).value)) {
-                    setPendingStatus(
-                      PendingType.isError,
-                      true,
-                      "不能輸入相同標籤"
-                    );
-                    setTimeout(() => {
-                      setPendingStatus(PendingType.isError, false);
-                    }, 1000);
-                    return;
-                  }
-
-                  setTag([...tag, (e.target as HTMLInputElement).value]);
-                  (e.target as HTMLInputElement).value = "";
-                }
+                if (e.key !== "Enter") return;
+                addTags(e);
               }}
             />
             <div className="flex flex-wrap">
@@ -273,7 +298,7 @@ const Edit = ({
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   onClick={() => deleteTags(singleTag)}
-                  className="relative m-1 rounded-md border-2 border-black bg-third px-3 py-1 text-xs hover:line-through"
+                  className="relative m-1 rounded-lg border-2 border-black bg-slate-600 px-2 py-1 text-xs text-white hover:line-through"
                 >
                   {singleTag}
                 </button>

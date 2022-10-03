@@ -1,6 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import ChartLine from "../../components/ChartLine";
 import StatusModal from "../../components/StatusModal";
 import useApi from "../../hooks/useApi";
@@ -23,7 +22,6 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
   );
   const { baseUrl, token } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
-  const location = useLocation();
 
   console.log(singleUrlInfo);
 
@@ -88,7 +86,7 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
           X
         </button>
         <p className="font-dela text-4xl">預留位</p>
-        {/* <ChartLine singleUrlInfo={singleUrlInfo} /> */}
+        <ChartLine singleUrlInfo={singleUrlInfo} />
       </div>
     </motion.div>
   );

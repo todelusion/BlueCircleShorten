@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import LogoPath from "../assets/logo.svg";
 import useApi from "../hooks/useApi";

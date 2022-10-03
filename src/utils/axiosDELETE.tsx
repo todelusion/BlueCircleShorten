@@ -4,14 +4,17 @@ import Headers from "./Headers";
 export interface IAxiosDELETE {
   url: string;
   token: string;
+  tag?: string[];
 }
 
 const axiosDELETE = async ({
   url,
   token,
+  tag,
 }: IAxiosDELETE): Promise<AxiosResponse> => {
-  const headers = token !== undefined ? new Headers(token) : {};
-  const res = await axios.delete(url, headers);
+  const headers = { Authorization: `Bearer ${token}` };
+  const data = { tag };
+  const res = await axios.delete(url, { headers, data });
   return res;
 };
 export default axiosDELETE;

@@ -24,7 +24,7 @@ const axiosPOST = async ({
   formData,
 }: IAxiosPOST): Promise<unknown | AxiosResponse> => {
   try {
-    console.log(body);
+    console.log(url, body);
     console.log(formData);
     const res = await axios.post(
       url,

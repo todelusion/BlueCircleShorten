@@ -1,5 +1,3 @@
-import { ISingleUrlChart } from "../types/Schema";
-
 import React from "react";
 import {
   Chart as ChartJS,
@@ -13,7 +11,11 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { ISingleUrlChart } from "../types/Schema";
 
+interface IChartLine {
+  singleUrlInfo: ISingleUrlChart;
+}
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -67,9 +69,7 @@ export const data = {
   ],
 };
 
-export default function ChartLine(
-  singleUrlChart: ISingleUrlChart
-): JSX.Element {
-  console.log(singleUrlChart);
+export default function ChartLine({ singleUrlInfo }: IChartLine): JSX.Element {
+  console.log(singleUrlInfo);
   return <Line options={options} data={data} />;
 }

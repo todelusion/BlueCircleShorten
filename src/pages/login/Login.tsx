@@ -56,8 +56,11 @@ export default function Login(): JSX.Element {
     const query = window.location.href.slice(stringTokenIndex, stringNameIndex);
     const token = query.replace("token=", "");
     sessionStorage.setItem("token", token);
+    console.log(sessionStorage.getItem("token"));
+    console.log(window.location.href.includes("callback?token="));
 
     if (window.location.href.includes("callback?token=")) {
+      console.log("direct");
       navigate("/home");
     }
   }, []);

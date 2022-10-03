@@ -126,12 +126,13 @@ const Edit = ({
     } else {
       body = editInfo;
     }
+    console.log(tag);
 
-    // axiosPOST({
-    //   url: `${baseUrl}/url/${urlID}/tag`,
-    //   body: { tag },
-    //   token,
-    // }).catch((err) => console.log(err));
+    axiosPOST({
+      url: `${baseUrl}/url/${urlID}/tag`,
+      body: { tag },
+      token,
+    }).catch((err) => console.log(err));
 
     axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token }).catch((err) =>
       console.log(err)

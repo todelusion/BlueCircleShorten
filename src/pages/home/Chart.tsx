@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import ChartLine from "../../components/ChartLine";
+import StatusModal from "../../components/StatusModal";
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -63,9 +65,15 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
       className="fixed left-0 right-0 top-0 bottom-0 flex items-center justify-center bg-black/50"
     >
       <div
-        className={`lg-Pseudo box-shadow relative -mt-10 mb-10 flex w-1/3 justify-between border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
+        className={`${
+          Object.values(pendingResult).includes(true) ? "show" : "close"
+        } z-10`}
       >
-        <p className="font-dela text-4xl">預留位</p>
+        <StatusModal pendingResult={pendingResult} />
+      </div>
+      <div
+        className={`lg-Pseudo box-shadow relative -mt-10 mb-10 flex w-4/5 flex-col items-center justify-between border-2 bg-white ${ThemeColor.Black} ${ThemeColor.Slate_Pseudo}`}
+      >
         <button
           type="button"
           onClick={() => {
@@ -75,9 +83,12 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
               urlID: "",
             }));
           }}
+          className="absolute right-3 top-3 font-sans text-2xl font-bold"
         >
           X
         </button>
+        <p className="font-dela text-4xl">預留位</p>
+        <ChartLine />
       </div>
     </motion.div>
   );

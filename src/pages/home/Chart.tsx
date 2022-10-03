@@ -53,25 +53,25 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
     }
   };
 
-  const calcNoRepeatClick = (
-    _singleUrlInfo?: ISingleUrlChart
-  ): ICalcNoRepeatClick => {
-    console.log("in calcNoRepeatClick");
-    console.log(_singleUrlInfo);
-    const browserClick = _singleUrlInfo?.notRepeatList.reduce<{
-      [index: string]: number;
-    }>((result, item) => {
-      type User = Extract<typeof item, { UserBowse: string }>;
-      const itemUser = item as User;
+  // const calcNoRepeatClick = (
+  //   _singleUrlInfo?: ISingleUrlChart
+  // ): ICalcNoRepeatClick => {
+  //   console.log("in calcNoRepeatClick");
+  //   console.log(_singleUrlInfo);
+  //   const browserClick = _singleUrlInfo?.notRepeatList.reduce<{
+  //     [index: string]: number;
+  //   }>((result, item) => {
+  //     type User = Extract<typeof item, { UserBowse: string }>;
+  //     const itemUser = item as User;
 
-      // if (itemUserBowse.UserBowse in result) {
-      //   result[itemUserBowse.UserBowse] += 1;
-      // } else {
-      //   result[itemUserBowse.UserBowse] = 1;
-      // }
-      return result;
-    }, {});
-  };
+  //     // if (itemUserBowse.UserBowse in result) {
+  //     //   result[itemUserBowse.UserBowse] += 1;
+  //     // } else {
+  //     //   result[itemUserBowse.UserBowse] = 1;
+  //     // }
+  //     return result;
+  //   }, {});
+  // };
 
   useEffect(() => {
     fetchSingleData().catch((error) => console.log(error));
@@ -87,7 +87,7 @@ const Chart = ({ urlID, setToggleModal }: IChartProps): JSX.Element => {
         />
       </div>
     );
-  calcNoRepeatClick(singleUrlInfo);
+  // calcNoRepeatClick(singleUrlInfo);
   return (
     <motion.div
       initial={{ opacity: 0 }}

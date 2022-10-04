@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Nav from "./Layout/Nav";
+import Chart from "./pages/home/Chart";
 import Home from "./pages/home/Home";
 import Shorten from "./pages/home/Shorten";
 import ChangePassword from "./pages/login/ChangePassword";
@@ -21,6 +22,7 @@ export default function Router(): JSX.Element {
         <Route path="/changepassword/:token" element={<ChangePassword />} />
         <Route path="/home" element={<Home />}>
           <Route index element={<Shorten />} />
+          <Route path="/home/chart/:urlid" element={<Chart />} />
         </Route>
       </Route>
     </Routes>

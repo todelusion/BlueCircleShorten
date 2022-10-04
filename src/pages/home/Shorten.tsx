@@ -1,5 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ThemeColor } from "../../types/Enum";
 import { ISingleUrlList } from "../../types/Schema";
 import { useHome } from "./Home";
@@ -7,7 +8,6 @@ import Edit from "./Edit";
 
 import { iconTrashPath, iconChartPath, iconEditPath } from "../../assets/icon";
 import useApi from "../../hooks/useApi";
-import Chart from "./Chart";
 
 export interface InitialToggleModal {
   showEditModal: boolean;
@@ -27,6 +27,8 @@ const Shorten = (): JSX.Element => {
   });
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
+  const navigate = useNavigate();
+  console.log(toggleModal);
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
@@ -78,13 +80,7 @@ const Shorten = (): JSX.Element => {
                   </p>
                   <button
                     type="button"
-                    onClick={() =>
-                      setToggleModal((prevState) => ({
-                        ...prevState,
-                        showChartModal: true,
-                        urlID: urlList.urlId,
-                      }))
-                    }
+                    onClick={() => navigate(`/home/chart/${urlList.urlId}`)}
                   >
                     <img src={iconChartPath} alt="chart" className="w-8" />
                   </button>
@@ -142,13 +138,6 @@ const Shorten = (): JSX.Element => {
             setToggleModal={setToggleModal}
             key="EditModal"
             urlList={toggleModal.urlList}
-          />
-        )}
-        {toggleModal.showChartModal && (
-          <Chart
-            urlID={toggleModal.urlID}
-            setToggleModal={setToggleModal}
-            key="ChartModal"
           />
         )}
       </AnimatePresence>

@@ -1,8 +1,14 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Outlet, useOutletContext } from "react-router-dom";
+import {
+  Outlet,
+  useLocation,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 import { AxiosError } from "axios";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AnimatePresence } from "framer-motion";
 import Form from "../../components/Form";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
@@ -17,7 +23,6 @@ import StatusModal from "../../components/StatusModal";
 import axiosPOST from "../../utils/axiosPOST";
 import axiosDELETE from "../../utils/axiosDELETE";
 import Account from "./Account";
-import { AnimatePresence } from "framer-motion";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -44,17 +49,18 @@ interface HomeContext {
 const Home = (): JSX.Element => {
   const { baseUrl, token } = useApi();
   const { pendingResult, setPendingStatus } = usePendingStatus();
-  // const [urlLists, dispatch] = useReducer(urlListsReducer, []);
+  const { pathname } = useLocation();
+
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
   const [toggleAccountsModal, setToggleAccountsModal] = useState(false);
   console.log(urlLists);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
-  // console.log(urlInfo);
 
   const fetchData = async (
     pageNum?: number,
-    searchUrl?: string
+    searchUrl?: string,
+    sortUrl?: "asc" | "clicked"
   ): Promise<void> => {
     // console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
@@ -74,7 +80,9 @@ const Home = (): JSX.Element => {
       const res = await axiosGET({
         url: `${baseUrl}/url?page=${
           pageNum === undefined ? "1" : pageNum
-        }&limit=4&sort=asc${searchUrl === undefined ? "" : `&q=${searchUrl}`}`,
+        }&limit=4${sortUrl === undefined ? "" : `&sort=${sortUrl}`}${
+          searchUrl === undefined ? "" : `&q=${searchUrl}`
+        }`,
         token,
       });
       // console.log(res);
@@ -213,51 +221,27 @@ const Home = (): JSX.Element => {
             }}
           />
         </li>
-        <li className="ml-5 flex">
-          <Form
-            className="w-full max-w-[100px] xs:max-w-[200px]"
-            label={{ name: "searchUrl", description: "searchUrl" }}
-            hideLabel="hidden"
-            showSearchIcon
-            showOutline={false}
-            input="bg-[#F5F5F5]"
-            handleChange={handleChange}
-            onSubmit={async () => {
-              await fetchData(countsOfPages.currentPage, urlInfo.searchUrl);
-            }}
-          />
-          <div className="ml-10 md:ml-20">
-            {countsOfPages.amountOfPages.map((num, index, array) => (
-              <React.Fragment key={num}>
-                {index === countsOfPages.currentPage - 3 ? (
-                  <button
-                    type="button"
-                    value="1"
-                    onClick={(e) => onSwitchPage(e)}
-                  >
-                    ...
-                  </button>
-                ) : (
-                  ""
-                )}
-                <input
-                  type="button"
-                  value={num}
-                  onClick={(e) => onSwitchPage(e)}
-                  className={`${
-                    countsOfPages.currentPage === index + 1 ? "bg-third" : ""
-                  }${
-                    index >= countsOfPages.currentPage - 3 &&
-                    index < countsOfPages.currentPage + 2
-                      ? ""
-                      : "hidden"
-                  } relative cursor-pointer rounded-xl px-3 underline`}
-                />
-                <span>
-                  {index === countsOfPages.currentPage + 1 ? (
+        {!pathname.startsWith("/home/chart") && (
+          <li className="ml-5 flex items-center">
+            <Form
+              className="w-full max-w-[100px] xs:max-w-[200px]"
+              label={{ name: "searchUrl", description: "searchUrl" }}
+              hideLabel="hidden"
+              showSearchIcon
+              showOutline={false}
+              input="bg-[#F5F5F5]"
+              handleChange={handleChange}
+              onSubmit={async () => {
+                await fetchData(countsOfPages.currentPage, urlInfo.searchUrl);
+              }}
+            />
+            <div className="ml-5">
+              {countsOfPages.amountOfPages.map((num, index, array) => (
+                <React.Fragment key={num}>
+                  {index === countsOfPages.currentPage - 3 ? (
                     <button
                       type="button"
-                      value={array.length}
+                      value="1"
                       onClick={(e) => onSwitchPage(e)}
                     >
                       ...
@@ -265,20 +249,72 @@ const Home = (): JSX.Element => {
                   ) : (
                     ""
                   )}
-                </span>
-              </React.Fragment>
-            ))}
-          </div>
-        </li>
-      </ul>
-      <AnimatePresence>
-        {toggleAccountsModal && (
-          <Account
-            key="AccountModal"
-            setToggleAccountsModal={setToggleAccountsModal}
-          />
+                  <input
+                    type="button"
+                    value={num}
+                    onClick={(e) => onSwitchPage(e)}
+                    className={`${
+                      countsOfPages.currentPage === index + 1 ? "bg-third" : ""
+                    }${
+                      index >= countsOfPages.currentPage - 3 &&
+                      index < countsOfPages.currentPage + 2
+                        ? ""
+                        : "hidden"
+                    } relative cursor-pointer rounded-xl px-3 underline`}
+                  />
+                  <span>
+                    {index === countsOfPages.currentPage + 1 ? (
+                      <button
+                        type="button"
+                        value={array.length}
+                        onClick={(e) => onSwitchPage(e)}
+                      >
+                        ...
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </React.Fragment>
+              ))}
+            </div>
+            <select
+              onChange={(e): void => {
+                console.log(e.target.value);
+                fetchData(
+                  countsOfPages.currentPage,
+                  undefined,
+                  e.target.value as "asc" | "clicked"
+                ).catch((err) => console.log(err));
+              }}
+              name="sort"
+              id="sort"
+              className="ml-5 hidden bg-second outline-none md:block"
+            >
+              <option value="">從新到舊</option>
+              <option value="asc">從舊到新</option>
+              <option value="clicked">點擊次數從多到少</option>
+            </select>
+          </li>
         )}
-      </AnimatePresence>
+        <select
+          onChange={(e): void => {
+            console.log(e.target.value);
+            fetchData(
+              countsOfPages.currentPage,
+              undefined,
+              e.target.value as "asc" | "clicked"
+            ).catch((err) => console.log(err));
+          }}
+          name="sort"
+          id="sort"
+          className="ml-5 block bg-second outline-none md:hidden"
+        >
+          <option value="">從新到舊</option>
+          <option value="asc">從舊到新</option>
+          <option value="clicked">點擊次數從多到少</option>
+        </select>
+      </ul>
 
       <Outlet context={{ urlLists, onDelete, fetchData, countsOfPages }} />
     </>

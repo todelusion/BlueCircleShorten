@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StatusModal from "../../components/StatusModal";
 import useApi from "../../hooks/useApi";
 import usePendingStatus from "../../hooks/usePendingStatus";
@@ -22,12 +22,12 @@ const Redirect = (): JSX.Element => {
       }, 2000);
       return;
     }
+    const newName = name?.replaceAll(/(name)=+/g, "");
 
-    name?.replace("=name", "");
     sessionStorage.setItem("token", token);
     axiosPATCH({
       url: `${baseUrl}/users/profile`,
-      body: { name },
+      body: { name: newName },
       token,
     })
       .then(() => {

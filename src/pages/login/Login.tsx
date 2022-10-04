@@ -34,7 +34,6 @@ export default function Login(): JSX.Element {
   };
 
   const onSubmit = (): void => {
-    console.log(loginInfo);
     if (
       loginInfo.email.match(RegExpEmail) === null ||
       loginInfo.password.match(RegExpPassword) === null
@@ -46,20 +45,6 @@ export default function Login(): JSX.Element {
       payload: { url: `${baseUrl}/users/sign_in`, body: loginInfo },
     });
   };
-
-  useEffect(() => {
-    // const stringTokenIndex = window.location.href.indexOf("token=");
-    // const stringNameIndex = window.location.href.indexOf("&name");
-    // const query = window.location.href.slice(stringTokenIndex, stringNameIndex);
-    // const token = query.replace("token=", "");
-    // sessionStorage.setItem("token", token);
-    // console.log(sessionStorage.getItem("token"));
-    // console.log(window.location.href.includes("callback?token="));
-    // if (window.location.href.includes("callback?token=")) {
-    //   console.log("direct");
-    //   navigate("/home");
-    // }
-  }, []);
 
   return (
     <>

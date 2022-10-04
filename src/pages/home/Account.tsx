@@ -34,7 +34,6 @@ const Account = ({ setToggleAccountsModal }: IAccountProps): JSX.Element => {
 
   const [profileData, setProfileData] = useState<IProfileData | null>(null);
   const { baseUrl, token } = useApi();
-  console.log(profileData);
 
   const fetchProfileData = async (): Promise<void> => {
     setPendingStatus(PendingType.isPending, true);
@@ -71,7 +70,6 @@ const Account = ({ setToggleAccountsModal }: IAccountProps): JSX.Element => {
     setPendingStatus(PendingType.isPending, true);
 
     let body = {};
-    console.log(ImageFile !== undefined);
 
     if (ImageFile !== undefined) {
       const res = await FileToFormdata(ImageFile.file).catch((err) =>
@@ -107,7 +105,6 @@ const Account = ({ setToggleAccountsModal }: IAccountProps): JSX.Element => {
     if (formRef.current === null || e.target.files === null) return;
 
     const file = Array.from(e.target.files);
-    // console.log(file[0]);
 
     if (file[0].size > 1048576) {
       setPendingStatus(PendingType.isError, true, "檔案不得超過1mb");

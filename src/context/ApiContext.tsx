@@ -99,7 +99,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
     const parsePromise = async (): Promise<void> => {
       const res = await state;
       if (res === undefined || res === null) return;
-      console.log(res);
 
       try {
         const successResponse = schemaPOST.parse(res);
@@ -107,7 +106,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
         // Redirect and ShowModal management
 
         if (successResponse !== null && successResponse !== undefined) {
-          console.log(successResponse);
           if (
             successResponse.config.url === `${baseUrl}/users/sign_in` ||
             successResponse.config.url === `${baseUrl}/users/sign_up`
@@ -147,7 +145,6 @@ export const ApiProvider = ({ children }: Props): JSX.Element => {
 
         if (successResponse.data.user === undefined) return;
       } catch (error) {
-        // console.log(error);
         const errorResponse = schemaError.parse(res);
         setErrorData(errorResponse);
         if (errorResponse !== null && errorResponse !== undefined) {

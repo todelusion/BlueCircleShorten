@@ -31,7 +31,6 @@ export default function FindPassword(): JSX.Element {
 
   const onSubmit = (): void => {
     if (dispatch === undefined) return window.location.reload();
-    console.log(findPasswordInfo);
     if (findPasswordInfo.email.match(RegExpEmail) === null) return undefined;
     setPendingStatus(PendingType.isPending, true);
     return dispatch({

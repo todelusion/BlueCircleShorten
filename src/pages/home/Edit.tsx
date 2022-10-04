@@ -35,10 +35,8 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
   const { pendingResult, setPendingStatus } = usePendingStatus();
 
   const [ImageFile, setImageFile] = useState<IImageFile>();
-  // console.log(ImageFile);
 
   const [tag, setTag] = useState<string[]>([]);
-  // console.log(tag);
   const [editInfo, setEditInfo] = useState({
     title: "",
     description: "",
@@ -65,7 +63,6 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
     if (formRef.current === null || e.target.files === null) return;
 
     const file = Array.from(e.target.files);
-    // console.log(file[0]);
 
     if (file[0].size > 1048576) {
       setPendingStatus(PendingType.isError, true, "檔案不得超過1mb");
@@ -121,7 +118,6 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
     } else {
       body = editInfo;
     }
-    console.log(tag);
 
     // axiosPOST({
     //   url: `${baseUrl}/url/${_id}/tag`,
@@ -158,8 +154,7 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
       body: { tag: [singleTagValue] },
       token,
     })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setPendingStatus(PendingType.isPending, false);
         setTag([...tag, singleTagValue]);
       })
@@ -176,8 +171,7 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
       token,
       tag: [singleTag],
     })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setPendingStatus(PendingType.isPending, false);
         setTag(tag.filter((item) => item !== singleTag));
       })

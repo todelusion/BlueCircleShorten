@@ -27,7 +27,6 @@ const handleRedirectAndModal = (promiseResultConfig: ResponseResult): void => {
     if (resData.status === 200 || resData.status === 201) {
       if (navigate !== undefined && path !== undefined) {
         // if(resData.config.url === `${baseUrl}/users/updatePassword`){
-        console.log(path);
         navigate(path);
       }
     }

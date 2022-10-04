@@ -54,7 +54,6 @@ const Home = (): JSX.Element => {
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
   const [toggleAccountsModal, setToggleAccountsModal] = useState(false);
-  // console.log(urlLists);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
 
   const fetchData = async (
@@ -62,7 +61,6 @@ const Home = (): JSX.Element => {
     searchUrl?: string,
     sortUrl?: string
   ): Promise<void> => {
-    // console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
     try {
       // 取得全部頁面數//
@@ -85,10 +83,8 @@ const Home = (): JSX.Element => {
         }`,
         token,
       });
-      // console.log(res);
 
       setPendingStatus(PendingType.isPending, false);
-      // console.log(res);
       setUrlLists(schemaUrlLists.parse(res.data));
     } catch (error) {
       setPendingStatus(PendingType.isPending, false);
@@ -98,9 +94,6 @@ const Home = (): JSX.Element => {
       }, 1000);
     }
   };
-
-  // const query = useParams();
-  // console.log(query);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -280,7 +273,6 @@ const Home = (): JSX.Element => {
             </div>
             <select
               onChange={(e): void => {
-                console.log(e.target.value);
                 setCountsOfPages((prevState) => ({
                   ...prevState,
                   sortUrl: e.target.value,

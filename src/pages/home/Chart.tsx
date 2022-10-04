@@ -28,7 +28,6 @@ const Chart = (): JSX.Element => {
   const [singleUrlInfo, setSingleUrlInfo] = useState<ISingleUrlChart | null>(
     null
   );
-  // console.log(singleUrlInfo);
   const { baseUrl, token } = useApi();
   const { urlid } = useParams();
   const navigate = useNavigate();
@@ -80,7 +79,6 @@ const Chart = (): JSX.Element => {
     const dateClick = _singleUrlInfo?.notRepeatList.reduce<{
       [index: string]: number;
     }>((result, item) => {
-      // console.log(item);
       const date = format(new Date(item.createdAt), "Y-MM-dd");
 
       if (date in result) {

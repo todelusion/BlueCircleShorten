@@ -35,7 +35,6 @@ export default function Login(): JSX.Element {
   };
 
   const onSubmit = (): void => {
-    console.log(RegistInfo);
     if (dispatch === undefined) return window.location.reload();
     if (
       RegistInfo.email.match(RegExpEmail) === null ||

@@ -24,14 +24,11 @@ const axiosPOST = async ({
   formData,
 }: IAxiosPOST): Promise<unknown | AxiosResponse> => {
   try {
-    console.log(url, body);
-    console.log(formData);
     const res = await axios.post(
       url,
       formData !== undefined ? formData : body,
       token !== undefined ? new Headers(token) : {}
     );
-    console.log(res);
 
     if (
       res.config.url === `${baseUrl}/users/sign_in` ||
@@ -39,7 +36,6 @@ const axiosPOST = async ({
     ) {
       sessionStorage.setItem("token", res.data.user.token);
     }
-    console.log(res);
     return res;
   } catch (error) {
     console.log(error);

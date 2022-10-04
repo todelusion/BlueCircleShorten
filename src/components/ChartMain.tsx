@@ -71,8 +71,6 @@ export const dateOptions = {
 export default function ChartMain({
   calcNoRepeatClick,
 }: IChartLineProps): JSX.Element {
-  console.log(calcNoRepeatClick);
-
   const browserClickData = {
     labels: Object.keys(
       calcNoRepeatClick.browserClick !== undefined &&

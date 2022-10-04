@@ -5,7 +5,6 @@ import useApi from "../hooks/useApi";
 const Nav = (): JSX.Element => {
   const { dispatch } = useApi();
   const { pathname } = useLocation();
-  console.log();
 
   return (
     <div className="flex h-screen items-center justify-center py-5">

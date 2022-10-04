@@ -28,15 +28,11 @@ const axiosPATCH = async ({
   formData,
 }: IAxiosPATCH): Promise<Response | unknown> => {
   try {
-    console.log(body);
-    console.log(formData);
-    console.log(token !== undefined ? new Headers(token) : {});
     const res = await axios.patch(
       url,
       formData !== undefined ? formData : body,
       token !== undefined ? new Headers(token) : {}
     );
-    console.log(res);
     return res;
   } catch (error) {
     console.log(error);

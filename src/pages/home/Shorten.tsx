@@ -28,7 +28,6 @@ const Shorten = (): JSX.Element => {
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
   const navigate = useNavigate();
-  // console.log(toggleModal);
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (

@@ -12,6 +12,7 @@ const Redirect = (): JSX.Element => {
   const navigate = useNavigate();
   const { baseUrl } = useApi();
   const { token, name } = params;
+
   useEffect(() => {
     setPendingStatus(PendingType.isPending, true);
     if (token === undefined || name === undefined) {
@@ -21,6 +22,8 @@ const Redirect = (): JSX.Element => {
       }, 2000);
       return;
     }
+
+    name?.replace("=name", "");
     sessionStorage.setItem("token", token);
     axiosPATCH({
       url: `${baseUrl}/users/profile`,

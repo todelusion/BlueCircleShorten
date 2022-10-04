@@ -52,6 +52,7 @@ const Home = (): JSX.Element => {
   const { pathname } = useLocation();
 
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
+  // console.log(countsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
   const [toggleAccountsModal, setToggleAccountsModal] = useState(false);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
@@ -295,6 +296,10 @@ const Home = (): JSX.Element => {
         )}
         <select
           onChange={(e): void => {
+            setCountsOfPages((prevState) => ({
+              ...prevState,
+              sortUrl: e.target.value,
+            }));
             fetchData(
               countsOfPages.currentPage,
               undefined,

@@ -1,15 +1,11 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import {
-  Outlet,
-  useLocation,
-  useOutletContext,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useLocation, useOutletContext } from "react-router-dom";
 import { AxiosError } from "axios";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence } from "framer-motion";
 import Form from "../../components/Form";
+import Account from "./Account";
 
 import { PendingType, ThemeColor } from "../../types/Enum";
 import { UrlLists, schemaUrlLists, schemaUrl } from "../../types/Schema";
@@ -22,7 +18,6 @@ import usePendingStatus from "../../hooks/usePendingStatus";
 import StatusModal from "../../components/StatusModal";
 import axiosPOST from "../../utils/axiosPOST";
 import axiosDELETE from "../../utils/axiosDELETE";
-import Account from "./Account";
 
 // type UrlListsType = { type:"SET_URLLISTS",  }
 
@@ -32,6 +27,7 @@ import Account from "./Account";
 const initialCountsOfPages = {
   amountOfPages: [1],
   currentPage: 1,
+  sortUrl: "",
 };
 
 export const initialUrlInfo = {
@@ -40,7 +36,11 @@ export const initialUrlInfo = {
 };
 
 interface HomeContext {
-  fetchData: (pageNum?: number) => Promise<void>;
+  fetchData: (
+    pageNum?: number,
+    searchUrl?: string,
+    sortUrl?: string
+  ) => Promise<void>;
   urlLists: UrlLists | null;
   onDelete: (urlID: string) => Promise<void>;
   countsOfPages: typeof initialCountsOfPages;
@@ -54,13 +54,13 @@ const Home = (): JSX.Element => {
   const [countsOfPages, setCountsOfPages] = useState(initialCountsOfPages);
   const [urlLists, setUrlLists] = useState<UrlLists | null>(null);
   const [toggleAccountsModal, setToggleAccountsModal] = useState(false);
-  console.log(urlLists);
+  // console.log(urlLists);
   const [urlInfo, setUrlInfo] = useState(initialUrlInfo);
 
   const fetchData = async (
     pageNum?: number,
     searchUrl?: string,
-    sortUrl?: "asc" | "clicked"
+    sortUrl?: string
   ): Promise<void> => {
     // console.log(pageNum);
     setPendingStatus(PendingType.isPending, true);
@@ -170,8 +170,8 @@ const Home = (): JSX.Element => {
     }));
     setPendingStatus(PendingType.isPending, true);
 
-    fetchData(Number(clickNum), urlInfo.searchUrl).catch((err) =>
-      console.log(err)
+    fetchData(Number(clickNum), urlInfo.searchUrl, countsOfPages.sortUrl).catch(
+      (err) => console.log(err)
     );
   };
 
@@ -281,6 +281,10 @@ const Home = (): JSX.Element => {
             <select
               onChange={(e): void => {
                 console.log(e.target.value);
+                setCountsOfPages((prevState) => ({
+                  ...prevState,
+                  sortUrl: e.target.value,
+                }));
                 fetchData(
                   countsOfPages.currentPage,
                   undefined,
@@ -299,7 +303,6 @@ const Home = (): JSX.Element => {
         )}
         <select
           onChange={(e): void => {
-            console.log(e.target.value);
             fetchData(
               countsOfPages.currentPage,
               undefined,
@@ -315,6 +318,14 @@ const Home = (): JSX.Element => {
           <option value="clicked">點擊次數從多到少</option>
         </select>
       </ul>
+      <AnimatePresence>
+        {toggleAccountsModal && (
+          <Account
+            key="Account"
+            setToggleAccountsModal={setToggleAccountsModal}
+          />
+        )}
+      </AnimatePresence>
 
       <Outlet context={{ urlLists, onDelete, fetchData, countsOfPages }} />
     </>

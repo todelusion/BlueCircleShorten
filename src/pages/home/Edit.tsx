@@ -19,7 +19,6 @@ import axiosDELETE from "../../utils/axiosDELETE";
 
 interface IEditProps {
   urlList: ISingleUrlList | null;
-  urlID: string;
   _id: string;
   setToggleModal: (value: React.SetStateAction<InitialToggleModal>) => void;
 }
@@ -29,12 +28,7 @@ interface IImageFile {
   localUrl: string;
 }
 
-const Edit = ({
-  urlID,
-  _id,
-  urlList,
-  setToggleModal,
-}: IEditProps): JSX.Element => {
+const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
   const formRef = useRef<HTMLFormElement>(null);
   const { baseUrl, token } = useApi();
   const { fetchData, countsOfPages } = useHome();
@@ -136,7 +130,11 @@ const Edit = ({
     // }).catch((err) => console.log(err));
 
     await axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token });
-    await fetchData(countsOfPages.currentPage);
+    await fetchData(
+      countsOfPages.currentPage,
+      undefined,
+      countsOfPages.sortUrl
+    );
     setPendingStatus(PendingType.isPending, false);
     setToggleModal((prevState) => ({ ...prevState, showEditModal: false }));
   };
@@ -218,9 +216,11 @@ const Edit = ({
               showEditModal: false,
               urlID: "",
             }));
-            fetchData(countsOfPages.currentPage).catch((err) =>
-              console.log(err)
-            );
+            fetchData(
+              countsOfPages.currentPage,
+              undefined,
+              countsOfPages.sortUrl
+            ).catch((err) => console.log(err));
           }}
           className="absolute right-3 top-3 font-sans text-2xl font-bold"
         >

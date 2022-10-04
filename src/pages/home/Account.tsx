@@ -1,12 +1,5 @@
 import { motion } from "framer-motion";
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { AxiosResponse } from "axios";
 import { schemaProfileData, IProfileData } from "../../types/Schema";
 import StatusModal from "../../components/StatusModal";

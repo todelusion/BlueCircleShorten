@@ -28,7 +28,7 @@ const Shorten = (): JSX.Element => {
   const { baseShorten } = useApi();
   const { urlLists, onDelete } = useHome();
   const navigate = useNavigate();
-  console.log(toggleModal);
+  // console.log(toggleModal);
 
   if (urlLists === null || urlLists === undefined) return <></>;
   return (
@@ -134,7 +134,6 @@ const Shorten = (): JSX.Element => {
           <Edit
             // eslint-disable-next-line no-underscore-dangle
             _id={toggleModal._id}
-            urlID={toggleModal.urlID}
             setToggleModal={setToggleModal}
             key="EditModal"
             urlList={toggleModal.urlList}

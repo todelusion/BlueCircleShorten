@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { ThemeColor, PendingType } from "../../types/Enum";
@@ -20,7 +20,6 @@ const initialState = {
 
 export default function Login(): JSX.Element {
   const [loginInfo, setLoginInfo] = useState<typeof initialState>(initialState);
-  const navigate = useNavigate();
 
   const { dispatch, baseUrl, pendingResult, setPendingStatus }: IApiReducer =
     useApi();
@@ -49,18 +48,17 @@ export default function Login(): JSX.Element {
   };
 
   useEffect(() => {
-    const stringTokenIndex = window.location.href.indexOf("token=");
-    const stringNameIndex = window.location.href.indexOf("&name");
-    const query = window.location.href.slice(stringTokenIndex, stringNameIndex);
-    const token = query.replace("token=", "");
-    sessionStorage.setItem("token", token);
-    console.log(sessionStorage.getItem("token"));
-    console.log(window.location.href.includes("callback?token="));
-
-    if (window.location.href.includes("callback?token=")) {
-      console.log("direct");
-      navigate("/home");
-    }
+    // const stringTokenIndex = window.location.href.indexOf("token=");
+    // const stringNameIndex = window.location.href.indexOf("&name");
+    // const query = window.location.href.slice(stringTokenIndex, stringNameIndex);
+    // const token = query.replace("token=", "");
+    // sessionStorage.setItem("token", token);
+    // console.log(sessionStorage.getItem("token"));
+    // console.log(window.location.href.includes("callback?token="));
+    // if (window.location.href.includes("callback?token=")) {
+    //   console.log("direct");
+    //   navigate("/home");
+    // }
   }, []);
 
   return (

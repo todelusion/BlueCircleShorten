@@ -68,6 +68,7 @@ export default function ChangePassword(): JSX.Element {
             status: newPasswordInfo.password.match(RegExpPassword) === null,
             message: "｜密碼至少8個字元以上｜包含1個大小與1個特殊字元｜",
           }}
+          type="password"
         />
         <Form
           className={`${ThemeColor.Slate_Pseudo} mb-10`}
@@ -79,6 +80,7 @@ export default function ChangePassword(): JSX.Element {
               newPasswordInfo.confirmPassword.length === 0,
             message: "請確認密碼是否一致",
           }}
+          type="password"
         />
         <div className="mb-10 flex justify-start">
           <Button

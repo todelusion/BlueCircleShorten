@@ -51,12 +51,16 @@ const Account = ({ setToggleAccountsModal }: IAccountProps): JSX.Element => {
     );
     formData.append("photo", file[0]);
 
-    const res = await axiosPOST({
-      url: `${baseUrl}/upload/url_img`,
-      formData,
-      token,
-    });
-    return res as AxiosResponse;
+    try {
+      const res = await axiosPOST({
+        url: `https://petcity.rocket-coding.com/hotel/uploadprofile`,
+        formData,
+      });
+      console.log(res);
+      return res as AxiosResponse;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onSubmit = async (): Promise<void> => {
@@ -95,7 +99,7 @@ const Account = ({ setToggleAccountsModal }: IAccountProps): JSX.Element => {
       body = accountInfo;
     }
 
-    await axiosPATCH({ url: `${baseUrl}/users/profile`, body, token });
+    // await axiosPATCH({ url: `${baseUrl}/users/profile`, body, token });
     await fetchProfileData();
     setPendingStatus(PendingType.isPending, false);
     setToggleAccountsModal(false);

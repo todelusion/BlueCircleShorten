@@ -51,12 +51,24 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
     );
     formData.append("photo", file[0]);
 
-    const res = await axiosPOST({
-      url: `${baseUrl}/upload/url_img`,
+    axiosPOST({
+      url: "https://petcity.rocket-coding.com/hotel/uploadprofile",
       formData,
-      token,
-    });
-    return res as AxiosResponse;
+    })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+
+    // try {
+    //   const res = await axiosPOST({
+    //     url: "https://petcity.rocket-coding.com/hotel/uploadprofile",
+    //     formData,
+    //   });
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    // return res as AxiosResponse;
   };
 
   const previewFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -125,7 +137,7 @@ const Edit = ({ _id, urlList, setToggleModal }: IEditProps): JSX.Element => {
     //   token,
     // }).catch((err) => console.log(err));
 
-    await axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token });
+    // await axiosPATCH({ url: `${baseUrl}/url/${_id}`, body, token });
     await fetchData(
       countsOfPages.currentPage,
       undefined,
